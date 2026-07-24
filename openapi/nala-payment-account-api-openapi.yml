@@ -1,0 +1,415 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  title: Resources Bank Payment Account API
+  version: '1'
+servers:
+- url: https://rest.sandbox.rafiki-api.com/v1
+tags:
+- name: Payment Account
+paths:
+  /payment-accounts:
+    get:
+      description: 'Using this endpoint, you can list all your payment accounts ordered by their creation date in descending order. Considering that the returned data may contain thousands of records, the results will be paginated with a cursor [(see pagination docs)](pagination), allowing you to scroll through the data using multiple requests as necessary.
+
+        '
+      parameters:
+      - description: The count of items returned as part of the pagination cursor iteration, minimum value is 1 and maximum 50
+        explode: true
+        in: query
+        name: paging_limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: The base64 URL encoded cursor used to access the next set of paginated results
+        explode: true
+        in: query
+        name: paging_after
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_payment_accounts_get_200_response'
+          description: OK
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyValidationFailed'
+          description: Validation failed, see [error codes](error-codes#validation_failed-http-422)
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyInternalServerError'
+          description: Internal server error
+      security:
+      - Bearer: []
+      summary: List
+      tags:
+      - Payment Account
+    post:
+      description: 'A payment account is a uniquely identifiable entity that serves the purpose of a recipient to send money to (e.g. a remittance recipient).
+
+
+        This endpoint allows you to create payment accounts of both **Mobile Money** and **Bank Account** types, which can subsequently serve as recipient accounts for making [payouts](post_payouts).
+
+
+        > 💁
+
+        >
+
+        > Although HTTP POST is not inherently idempotent, with this endpoint, you can confidently retry the same request without inadvertently creating duplicate records. Our process involves checking the existence of the payment account first. If it exists, we promptly respond with a `200 OK` status. Otherwise, we proceed to create a new one and respond with a `201 Created` status. In both scenarios, the structure of the response body will remain identical.
+
+
+        ### Mobile Money
+
+
+        The "mobile money" type refers to accounts registered with telecom companies (a.k.a operators) like SAFARICOM in Kenya, and it necessitates a valid mobile number for identification of the payment account within that telecom provider.
+
+
+        The following table outlines the operators supported by our API for each specific country.
+
+
+
+        | Country   | Operators                            |
+
+        | --------- | ------------------------------------ |
+
+        | 🇰🇪 KE     | SAFARICOM, AIRTEL                    |
+
+        | 🇹🇿 TZ     | VODACOM, AIRTEL, TIGO, HALOTEL, TTCL |
+
+        | 🇷🇼 RW     | AIRTEL, MTN                          |
+
+        | 🇬🇭 GH     | AIRTEL, MTN, TIGO, VODAFONE          |
+
+        | 🇺🇬 UG     | AIRTEL, MTN                          |
+
+        | 🇨🇮 CI     | MTN, ORANGE, MOOV                    |
+
+        | 🇸🇳 SN     | ORANGE, FREE, EXPRESSO               |
+
+        | 🇨🇲 CM     | MTN, ORANGE                          |
+
+
+        ### Bank account
+
+
+        The "bank account" type is designated for conventional accounts registered with bank institutions, such as "Equity Bank." It comprises an account number and the associated bank ID, where accounts are registered.
+
+
+        We provide support for numerous banks in each country. Documenting each of them here would be impractical. Therefore, we recommend utilizing the dedicated [/v1/banks](get_banks) endpoint to access the most current and accurate list of banks.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/openapi.PaymentAccountGetOrCreateRequest'
+        description: The payment account
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_payment_accounts_post_200_response'
+          description: The already existing payment account was returned
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_payment_accounts_post_200_response'
+          description: The payment account was created
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyValidationFailed'
+          description: Validation failed
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyInternalServerError'
+          description: Internal server error
+      security:
+      - Bearer: []
+      summary: Get or create
+      tags:
+      - Payment Account
+components:
+  schemas:
+    _payment_accounts_post_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.PaymentAccountGetOrCreateResponse'
+        type: object
+    openapi_PaymentAccountListResponseMeta_paging:
+      properties:
+        cursors:
+          $ref: '#/components/schemas/openapi_PaymentAccountListResponseMeta_paging_cursors'
+        next:
+          example: https://rest.sandbox.rafiki-api.com/v1/payment-accounts?paging_after=cGFjLTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw%3D%3D&paging_limit=15
+          type: string
+      type: object
+    openapi.PaymentAccountListResponseMeta:
+      properties:
+        paging:
+          $ref: '#/components/schemas/openapi_PaymentAccountListResponseMeta_paging'
+      type: object
+    openapi_PaymentAccountGetOrCreateResponse_mobile_money:
+      properties:
+        number:
+          example: 254000000000
+          format: e164
+          type: string
+        operator:
+          enum:
+          - SAFARICOM
+          - AIRTEL
+          - VODACOM
+          - TIGO
+          - HALOTEL
+          - TTCL
+          - MTN
+          - VODAFONE
+          - MOOV
+          - ORANGE
+          - FREE
+          - EXPRESSO
+          example: SAFARICOM
+          type: string
+      type: object
+    openapi_PaymentAccountListResponseMeta_paging_cursors:
+      properties:
+        after:
+          example: cGFjLTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw==
+          type: string
+      type: object
+    _payment_accounts_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollection'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/openapi.PaymentAccountGetOrCreateResponse'
+            type: array
+          meta:
+            $ref: '#/components/schemas/openapi.PaymentAccountListResponseMeta'
+        type: object
+    openapi_PaymentAccountGetOrCreateResponse_holder:
+      properties:
+        name:
+          type: string
+        type:
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+          type: string
+      type: object
+      x-order: '3'
+    openapi_PaymentAccountGetOrCreateResponse_bank_account:
+      properties:
+        bank_id:
+          example: bnk-xxx
+          format: ksuid
+          type: string
+        number:
+          format: alphanum
+          type: string
+      type: object
+      x-order: '4'
+    openapi.ResponseBodyValidationFailed:
+      properties:
+        code:
+          description: '`VALIDATION_FAILED`'
+          example: VALIDATION_FAILED
+          type: string
+        errors:
+          $ref: '#/components/schemas/openapi_ResponseBodyValidationFailed_errors'
+        message:
+          description: E.g. "Validation failed."
+          example: Validation failed.
+          type: string
+      type: object
+    openapi.PaymentAccountGetOrCreateRequest:
+      properties:
+        bank_account:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_bank_account'
+        country:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            The ISO 3166 alpha-2 country code in which the payment account is registered.'
+          example: KE
+          format: iso3166 alpha-2
+          type: string
+          x-order: '2'
+        holder:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_holder'
+        mobile_money:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_mobile_money'
+        type:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            Either `MOBILE_MONEY` or `BANK_ACCOUNT`'
+          enum:
+          - MOBILE_MONEY
+          - BANK_ACCOUNT
+          type: string
+          x-order: '1'
+      type: object
+    openapi.ResponseBodyInternalServerError:
+      properties:
+        code:
+          description: '`INTERNAL_SERVER_ERROR`'
+          example: INTERNAL_SERVER_ERROR
+          type: string
+        message:
+          description: E.g. "An internal error has occurred."
+          example: An internal error has occurred.
+          type: string
+      type: object
+    openapi_PaymentAccountGetOrCreateRequest_holder:
+      description: '<span style="color:#e95f6a;">required</span>
+
+
+        The individual (or business) in whose name the bank account is registered'
+      properties:
+        name:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            Either the INDIVIDUAL full name or the BUSINESS registered legal name'
+          format: ^(?:[\p{L}'\-]+\s*)+$
+          type: string
+        type:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            The holder legal entity type, whether an INDIVIDUAL person or a BUSINESS'
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+          type: string
+      type: object
+      x-order: '3'
+    openapi_PaymentAccountGetOrCreateRequest_bank_account:
+      properties:
+        bank_id:
+          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
+
+
+            The bank identifier representing the bank associated with the payment account'
+          example: bnk-xxx
+          format: ksuid
+          type: string
+        number:
+          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
+
+
+            The actual bank account number (alphanum).'
+          example: '12345678'
+          format: alphanum
+          type: string
+      type: object
+      x-order: '4'
+    openapi.PaymentAccountGetOrCreateResponse:
+      properties:
+        bank_account:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateResponse_bank_account'
+        country:
+          example: KE
+          format: iso3166 alpha-2
+          type: string
+          x-order: '2'
+        created_at:
+          example: 2006-01-02T15:04:05Z07:00
+          format: RFC 3339
+          type: string
+        holder:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateResponse_holder'
+        id:
+          description: The newly created payment account unique identifier
+          example: pac-xxx
+          format: iso3166 alpha-2
+          type: string
+          x-order: '0'
+        mobile_money:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateResponse_mobile_money'
+        type:
+          default: MOBILE_MONEY
+          type: string
+          x-order: '1'
+      type: object
+    openapi.ResponseBodySuccessCollection:
+      properties:
+        data:
+          items: {}
+          type: array
+        meta: {}
+      type: object
+    openapi_ResponseBodyValidationFailed_errors:
+      properties:
+        fields:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
+          type: object
+      type: object
+    openapi_PaymentAccountGetOrCreateRequest_mobile_money:
+      properties:
+        number:
+          description: '<span style="color:#e95f6a;">required with type MOBILE_MONEY</span>
+
+
+            The actual phone number formatted as E.164'
+          example: 254000000000
+          format: e164
+          type: string
+        operator:
+          description: '<span style="color:#e95f6a;">required with type MOBILE_MONEY</span>
+
+
+            The telco network associated with the phone number. Each country allows only a subset of operators, this is documented [here](post_payment-accounts#mobile-money).'
+          enum:
+          - SAFARICOM
+          - AIRTEL
+          - VODACOM
+          - TIGO
+          - HALOTEL
+          - TTCL
+          - MTN
+          - VODAFONE
+          - MOOV
+          - ORANGE
+          - FREE
+          - EXPRESSO
+          type: string
+      type: object
+      x-order: '4'
+    openapi.ResponseBodySuccessNoMeta:
+      properties:
+        data: {}
+      type: object
+  securitySchemes:
+    Bearer:
+      in: header
+      name: Authorization
+      type: apiKey
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true

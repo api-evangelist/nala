@@ -1,0 +1,2835 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  title: Resources Bank Payout API
+  version: '1'
+servers:
+- url: https://rest.sandbox.rafiki-api.com/v1
+tags:
+- name: Payout
+paths:
+  /payouts:
+    get:
+      description: 'Using this endpoint, you can list all your historical payouts with an optional dates filter. Considering that the returned data may contain thousands of records, the results will be paginated with a cursor [(see pagination docs)](pagination), allowing you to scroll through the data using multiple requests as necessary.
+
+
+
+
+
+        '
+      parameters:
+      - description: Filters for payouts created from the specified datetime. The expected format can be either a standard date (YYYY-MM-DD) that defaults to 00:00:00 UTC or a valid RFC3339 string, including time and/or offset information.
+        explode: true
+        in: query
+        name: created_at_from
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filters for payouts created before the specified datetime. The expected format can be either a standard date (YYYY-MM-DD) that defaults to 23:59:59 UTC or a valid RFC3339 string, including time and/or offset information.
+        explode: true
+        in: query
+        name: created_at_to
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The count of items returned as part of the pagination cursor iteration, minimum value is 1 and maximum 50
+        explode: true
+        in: query
+        name: paging_limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: The base64 URL encoded cursor used to access the next set of paginated results
+        explode: true
+        in: query
+        name: paging_after
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_payouts_get_200_response'
+          description: OK
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyValidationFailed'
+          description: Validation failed, see [error codes](error-codes#validation_failed-http-422)
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyInternalServerError'
+          description: Internal server error
+      security:
+      - Bearer: []
+      summary: List
+      tags:
+      - Payout
+    post:
+      description: 'The payout resource finds its application in various scenarios where funds need to be disbursed electronically; For example, but not limited to, money remittance services or businesses that need to disburse salaries to their employees.
+
+
+        Regardless of your specific use case, this endpoint has you covered, offering a versatile API to facilitate money disbursement from your [local wallets](get_wallets) to designated recipients (a.k.a [payment accounts](post_payment-accounts)).
+
+
+        > ℹ️ Lifecycle
+
+        >
+
+        > If the request you submit meets our minimum validation standards for processing the payout, our server will accept the request. It will defer the execution to a background asynchronous process, and in response, send you an HTTP 202 status code, along with the payout unique identifier.
+
+        > <br>
+
+        > Upon acceptance, the payout is marked as pending. Your client program will need to poll at intervals to [query the payout state](get_payouts-id) and determine whether it has succeeded or not. After the payout is completed, provided [webhook notifications](webhooks) are set up, Rafiki will also dispatch [payout.state-updated](payoutstate-updated) events
+
+        > <br>
+
+        >
+
+        > <details>
+
+        >  <summary>Payout States</summary>
+
+        > <br>
+
+        >  <table>
+
+        >    <thead>
+
+        >        <tr>
+
+        >            <th>State</th>
+
+        >            <th>Description</th>
+
+        >        </tr>
+
+        >    </thead>
+
+        >    <tbody>
+
+        >        <tr>
+
+        >            <th>⏳<br>PENDING</th>
+
+        >            <th>Your payout has been accepted, and it is currently awaiting processing.</th>
+
+        >        </tr>
+
+        >        <tr>
+
+        >           <th>🎉<br>SENT</th>
+
+        >           <th>The payout has been successfully processed, and the intended recipient should have received the funds.</th>
+
+        >        </tr>
+
+        >        <tr>
+
+        >           <th>🔙<br>REVERSED</th>
+
+        >           <th>Upon reaching the "SENT" state, you can request a manual reversal (for instance, if funds were sent to the wrong recipient) by contacting our support team. Please be aware that there is no programmatic API available for this process yet. This state indicates a successful reversal.</th>
+
+        >        </tr>
+
+        >        <tr>
+
+        >           <th>🙅<br>CANCELLED</th>
+
+        >           <th>If the payout has not yet reached the intended recipient, you have the option to request manual cancellation by reaching out to our support team (please note that there is no programmatic API for this yet). This state signifies that the payout has been successfully canceled.</th>
+
+        >        </tr>
+
+        >        <tr>
+
+        >           <th>💔<br>FAILED</th>
+
+        >           <th>
+
+        >               The funds did not reach the intended recipient due to a failure. If the "context" property does not provide specific information about the reason for the failure, please contact our customer support for assistance.
+
+        >           </th>
+
+        >        </tr>
+
+        >    </tbody>
+
+        >  </table>
+
+        >  </details>
+
+        > <br>
+
+        > <details>
+
+        >  <summary>Payout state context</summary>
+
+        > <br>
+
+        > When a payout fails, the "context" property of the state object will provide additional information about the reason for the failure. The table below outlines the possible values for this property.
+
+        >
+
+        > #### `WALLET_INSUFFICIENT_BALANCE`
+
+        >
+
+        > The selected wallet currently doesn''t have enough money to process the payout. <br><br>
+
+        >
+
+        > #### `PAYMENT_ACCOUNT_INVALID_ACCOUNT_NUMBER`
+
+        >
+
+        > The account number provided is invalid. <br><br>
+
+        >
+
+        > #### `PAYMENT_ACCOUNT_BALANCE_MAXED_OUT`
+
+        >
+
+        > The payment account balance has reached the maximum allowed. <br><br>
+
+        >
+
+        > #### `PAYMENT_ACCOUNT_PER_TRANSACTION_LIMIT_REACHED`
+
+        >
+
+        > The amount to be sent exceeds the maximum allowed per transaction for this payment account <br><br>
+
+        >
+
+        > #### `PAYMENT_ACCOUNT_DAILY_LIMIT_REACHED`
+
+        >
+
+        > The payment account has reached the daily limit or would reach it by processing this payout. <br><br>
+
+        >
+
+        > #### `PAYMENT_ACCOUNT_MONTHLY_LIMIT_REACHED`
+
+        >
+
+        > The payment account has reached the monthly limit or would reach it by processing this payout. <br><br>
+
+        >
+
+        > #### `PAYMENT_ACCOUNT_LIMIT_REACHED`
+
+        >
+
+        > The payment account has reached a limit but we don''t know which one. <br><br>
+
+        >
+
+        >  </details>
+
+
+        > 📘 Payout amount limits
+
+        >
+
+        > Depending on the payment account type and destination currency, different transactions amount limits apply.
+
+        > <br>
+
+        > Such limits might be enforced for compliance reasons or mandated by the banking authority that owns the payment account or the country in which the account resides.
+
+        > <br>
+
+        > <details>
+
+        > <summary>Per transaction limits</summary>
+
+        > <br>
+
+        > <table>
+
+        >     <thead>
+
+        >         <th>Country</th>
+
+        >         <th>Minimum</th>
+
+        >         <th>Maximum</th>
+
+        >    </thead>
+
+        >    <tbody>
+
+        >          <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇰🇪 Kenya</td>
+
+        >             <td>KSh 140</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Bank Account</th>
+
+        >                         <th>Mobile Money</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td>KSh 950,000</td>
+
+        >                             <td>KSh 250,000</td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >         <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇹🇿 Tanzania</td>
+
+        >             <td>TSh 2,500</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Bank Account</th>
+
+        >                         <th>Mobile Money</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td>TSh 20,000,000</td>
+
+        >                             <td>TSh 5,000,000</td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >         <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇷🇼 Rwanda</td>
+
+        >             <td>R&#x20A3; 500</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Mobile Money</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td style="text-align: center; vertical-align: middle;">
+
+        >                                 <strong>MTN</strong> R&#x20A3; 2,000,000 <br>
+
+        >                                 <strong>Airtel</strong> R&#x20A3; 500,000 <br>
+
+        >                             </td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >         <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇳🇬 Nigeria</td>
+
+        >             <td>&#x20A6; 100</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Bank Account</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td>&#x20A6; 50,000,000</td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >         <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇬🇭 Ghana</td>
+
+        >             <td>&#8373; 10</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Bank Account</th>
+
+        >                         <th>Mobile Money</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td>&#8373; 50,000</td>
+
+        >                             <td>&#8373; 15,000</td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >         <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇺🇬 Uganda</td>
+
+        >             <td>USh 5,000</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Bank Account</th>
+
+        >                         <th>Mobile Money</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td>USh 5,000,000</td>
+
+        >                             <td>USh 5,000,000</td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >         <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇪🇬 Egypt</td>
+
+        >             <td>&pound; 200</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Bank Account</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td>&pound; 300,000</td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >         <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇸🇳 Senegal</td>
+
+        >             <td>XOF 2,000</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Mobile Money</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td>XOF 1,500,000</td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >         <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇨🇮 C&ocirc;te d''Ivoire</td>
+
+        >             <td>XOF 2,000</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Mobile Money</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td>XOF 1,500,000</td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >         <tr style="text-align: center; vertical-align: middle;">
+
+        >             <td>🇨🇲 Cameroon</td>
+
+        >             <td>XAF 500</td>
+
+        >             <td>
+
+        >                 <table>
+
+        >                     <thead>
+
+        >                         <th>Mobile Money</th>
+
+        >                     </thead>
+
+        >                     <tbody>
+
+        >                         <tr>
+
+        >                             <td>XAF 1,000,000</td>
+
+        >                         </tr>
+
+        >                     </tbody>
+
+        >                 </table>
+
+        >             </td>
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > </details>
+
+
+        > ⚠️ Sender requirements
+
+        >
+
+        > Some countries might necessitate different and more comprehensive sender details.
+
+        > <br>
+
+        > We understand that navigating these varying rules for different countries can be complex, considering the multitude of combinations possible. To simplify this process, you can detail the requirements for each country listed below.
+
+        > <br>
+
+        >
+
+        > <details>
+
+        > <summary>🇰🇪 Kenya</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>-</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>-</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>-</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>-</td> <!-- Kenya -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        >
+
+        > <details>
+
+        > <summary>🇳🇬 Nigeria</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        >
+
+        > <details>
+
+        > <summary>🇹🇿 Tanzania</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        >
+
+        > <details>
+
+        > <summary>🇷🇼 Rwanda</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        >
+
+        > <details>
+
+        > <summary>🇬🇭 Ghana</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        >
+
+        > <details>
+
+        > <summary>🇺🇬 Uganda</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        >
+
+        > <details>
+
+        > <summary>🇪🇬 Egypt</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        >
+
+        > <details>
+
+        > <summary>🇸🇳 Senegal</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        >
+
+        > <details>
+
+        > <summary>🇨🇮 C&ocirc;te d''Ivoire</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d''Ivoire -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        >
+
+        > <details>
+
+        > <summary>🇨🇲 Cameroon</summary>
+
+        > <table>
+
+        >     <thead>
+
+        >         <tr>
+
+        >             <th>Field</th>
+
+        >             <th>Requirements</th>
+
+        >         </tr>
+
+        >     </thead>
+
+        >     <tbody>
+
+        >         <tr>
+
+        >             <td>sender.type</td>
+
+        >             <td>Required</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.name</td>
+
+        >             <td>Required</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line1</td>
+
+        >             <td>Required</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line2</td>
+
+        >             <td>-</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.line3</td>
+
+        >             <td>-</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.city</td>
+
+        >             <td>Required</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.postal_code</td>
+
+        >             <td>Required</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.address.country</td>
+
+        >             <td>Required</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.dob</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.type</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.country</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.number</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.issued_on</td>
+
+        >             <td>-</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >         <tr>
+
+        >             <td>sender.individual.identity_document.expires_on</td>
+
+        >             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->
+
+        >         </tr>
+
+        >     </tbody>
+
+        > </table>
+
+        > <br>
+
+        > </details>
+
+        '
+      parameters:
+      - description: '🚨️ Prevent duplicate payouts! See: [x-idempotency-key security scheme](idempotency)'
+        explode: false
+        in: header
+        name: X-Idempotency-Key
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/openapi.PayoutCreateRequest'
+        description: The payout
+        required: true
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_payouts_post_202_response'
+          description: Accepted
+        '402':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyWalletInsufficientBalance'
+          description: Not enough balance, see [error codes](error-codes#wallet_insufficient_balance-http-402)
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyIdempotencyConflict'
+          description: Idempotency conflict, see [error codes](error-codes#idempotency_race-http-409)
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyValidationFailed'
+          description: Validation failed, see [error codes](error-codes#validation_failed-http-422)
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyInternalServerError'
+          description: Internal server error
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyPayoutPaymentAccountTemporarilyUnavailable'
+          description: Receiving bank/operation temporarily unavailable see [error codes](error-codes)
+      security:
+      - Bearer: []
+      summary: Create
+      tags:
+      - Payout
+  /payouts/{id}:
+    get:
+      description: 'This endpoint enables the retrieval of a previously accepted payout using its unique ID (`pyt-xxx`) or the `custom_id` submitted when creating it. Its primary purpose is to periodically check for changes in the payout status.
+
+
+        To learn more about the lifecycle of payouts, please refer to the dedicated section under the [Send Money](post_payouts) endpoint.
+
+        '
+      parameters:
+      - description: The Payout ID (pyt-xxx) or the custom_id provided at the time of payout creation
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_payouts__id__get_200_response'
+          description: OK
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyNotFound'
+          description: Couldn't find any payout with the provided ID
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyInternalServerError'
+          description: Internal server error
+      security:
+      - Bearer: []
+      summary: Get
+      tags:
+      - Payout
+components:
+  schemas:
+    openapi_PayoutCreateRequest_amount:
+      description: '<span style="color:#e95f6a;">required</span>
+
+
+        The intended amount to send to either the payment_account_id or payment_account'
+      properties:
+        currency:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            The currency associated with the amount value, formatted according to ISO 4217'
+          example: KES
+          format: ISO 4217
+          type: string
+        value:
+          description: <span style="color:#e95f6a;">required</span>
+          example: '2000.99'
+          type: string
+      type: object
+    openapi.ResponseBodyWalletInsufficientBalance:
+      properties:
+        code:
+          description: '`WALLET_INSUFFICIENT_BALANCE`'
+          example: WALLET_INSUFFICIENT_BALANCE
+          type: string
+        message:
+          description: E.g. "Wallet '{wlt-xxx}' doesn't have enough balance"
+          example: wallet '{wlt-xxx}' doesn't have enough balance
+          type: string
+      type: object
+    openapi_PayoutListResponseMeta_paging_cursors:
+      properties:
+        after:
+          example: dHJ4LTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw==
+          type: string
+      type: object
+    openapi_PayoutCreateRequest_sender_individual:
+      properties:
+        dob:
+          description: Date of birth formatted as yyyy-mm-dd
+          example: 1970-01-01
+          format: yyyy-mm-dd
+          type: string
+        identity_document:
+          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender_individual_identity_document'
+      type: object
+    openapi.ResponseBodyIdempotencyConflict:
+      properties:
+        code:
+          description: Can be either `IDEMPOTENCY_RACE` or `IDEMPOTENCY_KEY_ALREADY_USED`
+          example: IDEMPOTENCY_RACE
+          type: string
+        message:
+          description: E.g. "Idempotency key already in use"
+          example: Idempotency key already in use
+          type: string
+      type: object
+    openapi_ResponseBodyValidationFailed_errors:
+      properties:
+        fields:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
+          type: object
+      type: object
+    openapi.ResponseBodySuccessCollection:
+      properties:
+        data:
+          items: {}
+          type: array
+        meta: {}
+      type: object
+    openapi_PayoutCreateResponse_sender_individual_identity_document:
+      properties:
+        country:
+          description: The ISO 3166 alpha-2 country code indicating the issuing country of the document.
+          example: IT
+          format: ISO 3166 alpha-2
+          type: string
+        expires_on:
+          description: Date formatted as yyyy-mm-dd
+          example: 2030-01-01
+          format: yyyy-mm-dd
+          type: string
+        issued_on:
+          description: Date formatted as yyyy-mm-dd
+          example: 2020-01-01
+          format: yyyy-mm-dd
+          type: string
+        number:
+          example: YA0000000
+          type: string
+        type:
+          enum:
+          - PASSPORT
+          - DRIVING_LICENCE
+          - NATIONAL_ID_CARD
+          - RESIDENCE_PERMIT
+          type: string
+      type: object
+    _payouts_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollection'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/openapi.PayoutGetResponse'
+            type: array
+          meta:
+            $ref: '#/components/schemas/openapi.PayoutListResponseMeta'
+        type: object
+    openapi.ResponseBodySuccessNoMeta:
+      properties:
+        data: {}
+      type: object
+    openapi_PayoutCreateResponse_state:
+      properties:
+        code:
+          description: The state code signifies the overall status of a payout. For detailed information about the meaning of each state, please consult the lifecycle section above.
+          enum:
+          - PENDING
+          - REVERSED
+          - SENT
+          - CANCELLED
+          - FAILED
+          example: PENDING
+          type: string
+        context:
+          description: Together with the "code" property, the "context" property offers additional context and information, whenever possible, about the specific state. For instance, if a payout fails, there are numerous reasons why this might occur. The "context" property will provide more detailed information in such cases.
+          type: string
+      type: object
+    openapi_PayoutCreateResponse_amount:
+      properties:
+        currency:
+          description: The currency associated with the amount value, formatted according to ISO 4217
+          example: KES
+          format: ISO 4217
+          type: string
+        value:
+          example: '2000.99'
+          type: string
+      type: object
+    openapi.PaymentAccountGetOrCreateRequest:
+      properties:
+        bank_account:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_bank_account'
+        country:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            The ISO 3166 alpha-2 country code in which the payment account is registered.'
+          example: KE
+          format: iso3166 alpha-2
+          type: string
+          x-order: '2'
+        holder:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_holder'
+        mobile_money:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_mobile_money'
+        type:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            Either `MOBILE_MONEY` or `BANK_ACCOUNT`'
+          enum:
+          - MOBILE_MONEY
+          - BANK_ACCOUNT
+          type: string
+          x-order: '1'
+      type: object
+    openapi.ResponseBodyValidationFailed:
+      properties:
+        code:
+          description: '`VALIDATION_FAILED`'
+          example: VALIDATION_FAILED
+          type: string
+        errors:
+          $ref: '#/components/schemas/openapi_ResponseBodyValidationFailed_errors'
+        message:
+          description: E.g. "Validation failed."
+          example: Validation failed.
+          type: string
+      type: object
+    _payouts_post_202_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.PayoutCreateResponse'
+        type: object
+    openapi_PayoutListResponseMeta_paging:
+      properties:
+        cursors:
+          $ref: '#/components/schemas/openapi_PayoutListResponseMeta_paging_cursors'
+        next:
+          example: https://rest.sandbox.rafiki-api.com/v1/payouts?paging_after=dHJ4LTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw%3D%3D&paging_limit=10
+          type: string
+      type: object
+    openapi_PaymentAccountGetOrCreateRequest_bank_account:
+      properties:
+        bank_id:
+          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
+
+
+            The bank identifier representing the bank associated with the payment account'
+          example: bnk-xxx
+          format: ksuid
+          type: string
+        number:
+          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
+
+
+            The actual bank account number (alphanum).'
+          example: '12345678'
+          format: alphanum
+          type: string
+      type: object
+      x-order: '4'
+    openapi_PayoutCreateResponse_sender_address:
+      properties:
+        city:
+          example: Roma
+          type: string
+        country:
+          description: The ISO 3166 alpha-2 country code associated with the address.
+          example: IT
+          format: ISO 3166 alpha-2
+          type: string
+        line_1:
+          example: Piazza del Colosseo
+          type: string
+        line_2:
+          example: '1'
+          type: string
+        line_3:
+          example: ''
+          type: string
+          x-omitempty: true
+        postal_code:
+          example: 00184
+          type: string
+      type: object
+    openapi.ResponseBodyNotFound:
+      properties:
+        code:
+          description: '`NOT_FOUND`'
+          example: NOT_FOUND
+          type: string
+        message:
+          description: E.g. "The resource you are looking for cannot be found."
+          example: The resource you are looking for cannot be found.
+          type: string
+      type: object
+    openapi.PayoutCreateRequest:
+      properties:
+        amount:
+          $ref: '#/components/schemas/openapi_PayoutCreateRequest_amount'
+        custom_id:
+          description: 'An optional unique custom id that can be used to reconcile payouts with your own internal systems, this is particularly useful in the event of network failures.
+
+
+            The accepted format can include up to 64 characters, which may consist of both letters, digits, and the symbols "-" and "_".'
+          example: custom-id-xxx
+          format: '[a-zA-Z0-9-_]{1,64}'
+          type: string
+        on_behalf_of:
+          example:
+          - '["org-xxx"]'
+          items:
+            format: .{1,32}
+            type: string
+          type: array
+        payment_account:
+          allOf:
+          - $ref: '#/components/schemas/openapi.PaymentAccountGetOrCreateRequest'
+          description: '<span style="color:#e95f6a;">required if payment_account_id is empty</span>
+
+
+            You have the option to create a payment account on the spot by including it here. If it doesn''t already exist, it will be created and automatically employed as the recipient for the payout request. If it already exists, we will simply retrieve it and utilize it, preventing the creation of duplicate accounts.'
+        payment_account_id:
+          description: '<span style="color:#e95f6a;">required if payment_account is empty</span>
+
+
+            The payment account ID represents a pre-existing payment account that acts as the recipient for the payout.'
+          example: pac-xxx
+          type: string
+        purpose:
+          description: '<span style="color:#e95f6a;">required if payment_account country is GH,UG,EG,CI,SN or CM</span>
+
+
+            The purpose of the payout is a mandatory property that must be provided for compliance and reporting purposes.
+
+            Choose one of the following predefined values that best describes the nature of the payout:
+
+
+            <ul>
+
+            <li><code>GOODS_PURCHASE</code>: Payments made for buying physical or digital goods.</li>
+
+            <li><code>SERVICES_PAYMENT</code>: Payments made for services rendered, including professional services, consulting, and freelance work.</li>
+
+            <li><code>INVOICE_PAYMENT</code>: Payments made to settle invoices issued for goods or services.</li>
+
+            <li><code>LOAN_REPAYMENT</code>: Payments made towards repaying loans, including personal, auto, mortgage, and business loans.</li>
+
+            <li><code>BILLS_PAYMENT</code>: Payments for recurring bills such as utilities, rent, insurance, and telecommunications.</li>
+
+            <li><code>SALARY_AND_WAGES</code>: Disbursements made to employees for their salaries and wages.</li>
+
+            <li><code>P2P_TRANSFER</code>: Domestic person-to-person transfers for sending money to friends, family, or acquaintances.</li>
+
+            <li><code>REMITTANCE</code>: Cross-border person-to-person transfers for sending money to friends, family, or acquaintances.</li>
+
+            <li><code>DONATION</code>: Payments made to charitable organizations or causes.</li>
+
+            <li><code>GRANTS_AND_SCHOLARSHIPS</code>: Payments distributed as grants, scholarships, or other forms of financial aid.</li>
+
+            <li><code>TRAVEL_AND_ACCOMMODATION</code>: Payments made for travel-related expenses, including flight bookings, hotel reservations, and car rentals.</li>
+
+            <li><code>TAX_PAYMENT</code>: Payments made for settling taxes and duties.</li>
+
+            <li><code>INSURANCE_PREMIUM</code>: Payments made towards insurance policies, including health, auto, and life insurance.</li>
+
+            </ul>'
+          enum:
+          - GOODS_PURCHASE
+          - SERVICES_PAYMENT
+          - INVOICE_PAYMENT
+          - LOAN_REPAYMENT
+          - BILLS_PAYMENT
+          - SALARY_AND_WAGES
+          - P2P_TRANSFER
+          - REMITTANCE
+          - DONATION
+          - GRANTS_AND_SCHOLARSHIPS
+          - TRAVEL_AND_ACCOMMODATION
+          - TAX_PAYMENT
+          - INSURANCE_PREMIUM
+          example: REMITTANCE
+          type: string
+        sender:
+          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender'
+        wallet_id:
+          description: The wallet ID from which to disburse money, if not provided, we will attempt to use the one that matches the provided currency amount.
+          example: wlt-xxx
+          type: string
+      type: object
+    openapi_PaymentAccountGetOrCreateRequest_mobile_money:
+      properties:
+        number:
+          description: '<span style="color:#e95f6a;">required with type MOBILE_MONEY</span>
+
+
+            The actual phone number formatted as E.164'
+          example: 254000000000
+          format: e164
+          type: string
+        operator:
+          description: '<span style="color:#e95f6a;">required with type MOBILE_MONEY</span>
+
+
+            The telco network associated with the phone number. Each country allows only a subset of operators, this is documented [here](post_payment-accounts#mobile-money).'
+          enum:
+          - SAFARICOM
+          - AIRTEL
+          - VODACOM
+          - TIGO
+          - HALOTEL
+          - TTCL
+          - MTN
+          - VODAFONE
+          - MOOV
+          - ORANGE
+          - FREE
+          - EXPRESSO
+          type: string
+      type: object
+      x-order: '4'
+    openapi_PayoutCreateRequest_sender:
+      description: An optional property for incorporating sender details. Please refer to the "💡 **Compliance requirements**" documentation above.
+      properties:
+        address:
+          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender_address'
+        individual:
+          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender_individual'
+        name:
+          description: '<span style="color:#e95f6a;">required if sender is provided</span>
+
+
+            The individual full name or registered business legal name'
+          example: Mario Rossi
+          type: string
+        type:
+          description: '<span style="color:#e95f6a;">required if sender is provided</span>
+
+
+            Either `INDIVIDUAL` or `BUSINESS`'
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+          type: string
+      type: object
+    openapi.PayoutGetResponse:
+      properties:
+        amount:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_amount'
+        created_at:
+          example: 2006-01-02T15:04:05Z07:00
+          format: RFC 3339
+          type: string
+        custom_id:
+          example: custom-id-xxx
+          format: '[a-zA-Z0-9-_]{1,64}'
+          type: string
+        id:
+          description: The payout unique identifier
+          example: pyt-xxx
+          type: string
+        on_behalf_of:
+          example:
+          - '["org-xxx"]'
+          items:
+            type: string
+          type: array
+        payment_account_id:
+          description: The recipient payment account receiving funds
+          example: pac-xxx
+          type: string
+        purpose:
+          enum:
+          - GOODS_PURCHASE
+          - SERVICES_PAYMENT
+          - INVOICE_PAYMENT
+          - LOAN_REPAYMENT
+          - BILLS_PAYMENT
+          - SALARY_AND_WAGES
+          - P2P_TRANSFER
+          - REMITTANCE
+          - DONATION
+          - GRANTS_AND_SCHOLARSHIPS
+          - TRAVEL_AND_ACCOMMODATION
+          - TAX_PAYMENT
+          - INSURANCE_PREMIUM
+          example: REMITTANCE
+          type: string
+        receipt:
+          description: 'The reference provided by the recipient account''s actual bank or telco on a successful payout.
+
+
+            > ⚠️
+
+            > It''s important to be aware that this information might not be accessible for every payout. If there''s no way for us to obtain it, this property will be omitted entirely. Hence, we highly recommend implementing conditional checks to confirm the presence of this property.'
+          example: ref-xxx (format changes depending on the telco/bank)
+          type: string
+        sender:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_sender'
+        state:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_state'
+        wallet_id:
+          description: The wallet ID from which the money will disburse
+          example: wlt-xxx
+          type: string
+      type: object
+    openapi_PayoutCreateRequest_sender_individual_identity_document:
+      properties:
+        country:
+          description: '<span style="color:#e95f6a;">required if identity_document is provided</span>
+
+
+            The ISO 3166 alpha-2 country code indicating the issuing country of the document.'
+          example: IT
+          format: ISO 3166 alpha-2
+          type: string
+        expires_on:
+          description: '<span style="color:#e95f6a;">required if identity_document is provided</span>
+
+
+            Date formatted as yyyy-mm-dd'
+          example: 2030-01-01
+          format: yyyy-mm-dd
+          type: string
+        issued_on:
+          description: Date formatted as yyyy-mm-dd
+          example: 2020-01-01
+          format: yyyy-mm-dd
+          type: string
+        number:
+          description: <span style="color:#e95f6a;">required if identity_document is provided</span>
+          example: YA0000000
+          type: string
+        type:
+          description: '<span style="color:#e95f6a;">required if identity_document is provided</span>
+
+
+            One of `PASSPORT`, `DRIVING_LICENCE`, `NATIONAL_ID_CARD`, `RESIDENCE_PERMIT`'
+          enum:
+          - PASSPORT
+          - DRIVING_LICENCE
+          - NATIONAL_ID_CARD
+          - RESIDENCE_PERMIT
+          type: string
+      type: object
+    openapi_PayoutCreateResponse_sender_individual:
+      properties:
+        dob:
+          description: Date of birth formatted as yyyy-mm-dd
+          example: 1970-01-01
+          format: yyyy-mm-dd
+          type: string
+        identity_document:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_sender_individual_identity_document'
+      type: object
+    openapi.ResponseBodyInternalServerError:
+      properties:
+        code:
+          description: '`INTERNAL_SERVER_ERROR`'
+          example: INTERNAL_SERVER_ERROR
+          type: string
+        message:
+          description: E.g. "An internal error has occurred."
+          example: An internal error has occurred.
+          type: string
+      type: object
+    openapi.PayoutListResponseMeta:
+      properties:
+        paging:
+          $ref: '#/components/schemas/openapi_PayoutListResponseMeta_paging'
+      type: object
+    openapi.ResponseBodyPayoutPaymentAccountTemporarilyUnavailable:
+      properties:
+        code:
+          description: '`PAYOUT_BANK_TEMPORARILY_UNAVAILABLE`'
+          example: PAYOUT_BANK_TEMPORARILY_UNAVAILABLE
+          type: string
+        message:
+          description: E.g. "Payout to this bank is not available."
+          example: Payout to this bank is not available.
+          type: string
+      type: object
+    openapi.PayoutCreateResponse:
+      properties:
+        amount:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_amount'
+        created_at:
+          example: 2006-01-02T15:04:05Z07:00
+          format: RFC 3339
+          type: string
+        custom_id:
+          example: custom-id-xxx
+          format: '[a-zA-Z0-9-_]{1,64}'
+          type: string
+        id:
+          description: The payout unique identifier
+          example: pyt-xxx
+          type: string
+        on_behalf_of:
+          example:
+          - '["org-xxx"]'
+          items:
+            type: string
+          type: array
+        payment_account_id:
+          description: The recipient payment account receiving funds
+          example: pac-xxx
+          type: string
+        purpose:
+          enum:
+          - GOODS_PURCHASE
+          - SERVICES_PAYMENT
+          - INVOICE_PAYMENT
+          - LOAN_REPAYMENT
+          - BILLS_PAYMENT
+          - SALARY_AND_WAGES
+          - P2P_TRANSFER
+          - REMITTANCE
+          - DONATION
+          - GRANTS_AND_SCHOLARSHIPS
+          - TRAVEL_AND_ACCOMMODATION
+          - TAX_PAYMENT
+          - INSURANCE_PREMIUM
+          example: REMITTANCE
+          type: string
+        sender:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_sender'
+        state:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_state'
+        wallet_id:
+          description: The wallet ID from which the money will disburse
+          example: wlt-xxx
+          type: string
+      type: object
+    openapi_PayoutCreateRequest_sender_address:
+      properties:
+        city:
+          description: <span style="color:#e95f6a;">required if address is provided</span>
+          example: Roma
+          type: string
+        country:
+          description: '<span style="color:#e95f6a;">required if address is provided</span>
+
+
+            The ISO 3166 alpha-2 country code associated with the address.'
+          example: IT
+          type: string
+        line_1:
+          description: <span style="color:#e95f6a;">required if address is provided</span>
+          example: Piazza del Colosseo
+          type: string
+        line_2:
+          example: '1'
+          type: string
+        line_3:
+          example: ''
+          type: string
+          x-omitempty: true
+        postal_code:
+          description: '<span style="color:#e95f6a;">required if address is provided</span>
+
+
+            ⚠️ We enforce postal code validation for these following country codes : GB, US, PT, IE, MT, NG, NL, SK'
+          example: 00184
+          type: string
+      type: object
+    _payouts__id__get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.PayoutGetResponse'
+        type: object
+    openapi_PayoutCreateResponse_sender:
+      properties:
+        address:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_sender_address'
+        individual:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_sender_individual'
+        name:
+          description: The individual full name or registered business legal name
+          example: Mario Rossi
+          type: string
+        type:
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+          type: string
+      type: object
+    openapi_PaymentAccountGetOrCreateRequest_holder:
+      description: '<span style="color:#e95f6a;">required</span>
+
+
+        The individual (or business) in whose name the bank account is registered'
+      properties:
+        name:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            Either the INDIVIDUAL full name or the BUSINESS registered legal name'
+          format: ^(?:[\p{L}'\-]+\s*)+$
+          type: string
+        type:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            The holder legal entity type, whether an INDIVIDUAL person or a BUSINESS'
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+          type: string
+      type: object
+      x-order: '3'
+  securitySchemes:
+    Bearer:
+      in: header
+      name: Authorization
+      type: apiKey
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true

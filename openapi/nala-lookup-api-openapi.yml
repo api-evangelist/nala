@@ -1,0 +1,197 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  title: Resources Bank Lookup API
+  version: '1'
+servers:
+- url: https://rest.sandbox.rafiki-api.com/v1
+tags:
+- name: Lookup
+paths:
+  /lookups/{accountNumber}:
+    get:
+      description: 'The lookup resource facilitates the retrieval of metadata associated with mobile money or bank accounts. For instance, prior to creating payment accounts, you can utilize this endpoint to validate whether an account number corresponds to a specific business or individual.
+
+
+        This functionality proves especially valuable in ensuring that only validated payment accounts are utilized; for example, when integrated with other processes, such as payouts, it helps mitigate the risk of costly reversals or refunds resulting from funds being sent to an incorrect recipient.
+
+
+        ### Account not found
+
+
+        While we strive to ensure that our lookup sources are always up to date with the most recent data, we must consider instances when we cannot retrieve metadata for a requested payment account.
+
+
+        In such cases, our API will respond with the error code [LOOKUP_ACCOUNT_NOT_FOUND](error-codes#lookup_account_not_found-http-404), providing a way to programmatically determine whether the account lookup was unsuccessful.
+
+
+        For some cases like Kenya mobile money lookups, try again in 5 minutes after getting the `LOOKUP_ACCOUNT_NOT_FOUND` error. If we respond with the same error again, it is likely that the account is not registered with the operator.
+
+
+        ### Supported countries/account types
+
+
+        | Country       | Mobile Money | Bank Account |
+
+        |:--------------|:------------:|:------------:|
+
+        | 🇳🇬 Nigeria  |     ❌       |      ✅      |
+
+        | 🇺🇬 Uganda   |     ✅       |      ✅      |
+
+        | 🇬🇭 Ghana    |     ✅       |      ✅      |
+
+        | 🇰🇪 Kenya    |     ✅       |      ✅      |
+
+        '
+      parameters:
+      - description: The payment account type to lookup for
+        explode: true
+        in: query
+        name: payment_account_type
+        required: true
+        schema:
+          enum:
+          - MOBILE_MONEY
+          - BANK_ACCOUNT
+          type: string
+        style: form
+      - description: If payment_account_type is BANK_ACCOUNT, this will be a mandatory field representing the bank id (bnk-xxx) used to identify which bank the account number belongs to
+        explode: true
+        in: query
+        name: bank_id
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The account number, that is either the mobile money number or bank account number
+        explode: false
+        in: path
+        name: accountNumber
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: If payment_account_type is MOBILE_MONEY, this will be a mandatory field representing the mobile money operator
+        explode: true
+        in: query
+        name: operator
+        required: false
+        schema:
+          enum:
+          - AIRTEL
+          - TIGO
+          - MTN
+          - VODAFONE
+          - SAFARICOM
+          type: string
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_lookups__accountNumber__get_200_response'
+          description: The found looked up account number information
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyLookupAccountNotFound'
+          description: The provided account identifier is unregistered / couldn't be found
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyValidationFailed'
+          description: Validation failed, e.g. missing payment_account_type
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyInternalServerError'
+          description: Internal server error
+      security:
+      - Bearer: []
+      summary: Get
+      tags:
+      - Lookup
+components:
+  schemas:
+    _lookups__accountNumber__get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.LookupGetResponse'
+        type: object
+    openapi.ResponseBodyValidationFailed:
+      properties:
+        code:
+          description: '`VALIDATION_FAILED`'
+          example: VALIDATION_FAILED
+          type: string
+        errors:
+          $ref: '#/components/schemas/openapi_ResponseBodyValidationFailed_errors'
+        message:
+          description: E.g. "Validation failed."
+          example: Validation failed.
+          type: string
+      type: object
+    openapi.LookupGetResponse:
+      properties:
+        holder:
+          $ref: '#/components/schemas/openapi_LookupGetResponse_holder'
+      type: object
+    openapi_LookupGetResponse_holder:
+      properties:
+        name:
+          description: The payment account owner's registered full name at the banking entity
+          example: Mario Rossi
+          type: string
+      type: object
+      x-order: '1'
+    openapi.ResponseBodyInternalServerError:
+      properties:
+        code:
+          description: '`INTERNAL_SERVER_ERROR`'
+          example: INTERNAL_SERVER_ERROR
+          type: string
+        message:
+          description: E.g. "An internal error has occurred."
+          example: An internal error has occurred.
+          type: string
+      type: object
+    openapi.ResponseBodyLookupAccountNotFound:
+      properties:
+        code:
+          description: '`LOOKUP_ACCOUNT_NOT_FOUND`'
+          example: LOOKUP_ACCOUNT_NOT_FOUND
+          type: string
+        message:
+          description: E.g. "Invalid bank account number, or, syntactically valid, but not registered with any banking entity"
+          example: the provided account identifier {'xxxxxxxxx'} couldn't be looked up
+          type: string
+      type: object
+    openapi_ResponseBodyValidationFailed_errors:
+      properties:
+        fields:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
+          type: object
+      type: object
+    openapi.ResponseBodySuccessNoMeta:
+      properties:
+        data: {}
+      type: object
+  securitySchemes:
+    Bearer:
+      in: header
+      name: Authorization
+      type: apiKey
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true

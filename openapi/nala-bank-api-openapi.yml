@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  title: Resources Bank API
+  version: '1'
+servers:
+- url: https://rest.sandbox.rafiki-api.com/v1
+tags:
+- name: Bank
+paths:
+  /banks:
+    get:
+      description: 'Within the scope of this API, the "Bank" resource serves the purpose of identifying the financial institutions that own payment accounts.
+
+
+        This endpoint enables you to retrieve the list of banks provided by our API.
+
+        '
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_banks_get_200_response'
+          description: OK
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyInternalServerError'
+          description: Internal server error
+      security:
+      - Bearer: []
+      summary: List
+      tags:
+      - Bank
+components:
+  schemas:
+    _banks_get_200_response_allOf_data_inner:
+      properties:
+        country:
+          description: The ISO 3166 alpha-2 country code in which the bank operates.
+          example: TZ
+          type: string
+        id:
+          example: bnk-xxx
+          format: ksuid
+          type: string
+        name:
+          example: TIB Corporate Bank Limited
+          type: string
+      type: object
+    openapi.ResponseBodySuccessCollectionNoMeta:
+      properties:
+        data:
+          items: {}
+          type: array
+      type: object
+    openapi.ResponseBodyInternalServerError:
+      properties:
+        code:
+          description: '`INTERNAL_SERVER_ERROR`'
+          example: INTERNAL_SERVER_ERROR
+          type: string
+        message:
+          description: E.g. "An internal error has occurred."
+          example: An internal error has occurred.
+          type: string
+      type: object
+    _banks_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollectionNoMeta'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/_banks_get_200_response_allOf_data_inner'
+            type: array
+        type: object
+  securitySchemes:
+    Bearer:
+      in: header
+      name: Authorization
+      type: apiKey
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true

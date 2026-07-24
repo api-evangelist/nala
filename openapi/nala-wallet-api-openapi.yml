@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  contact: {}
+  title: Resources Bank Wallet API
+  version: '1'
+servers:
+- url: https://rest.sandbox.rafiki-api.com/v1
+tags:
+- name: Wallet
+paths:
+  /wallets:
+    get:
+      description: 'Wallets serve as repositories for your funds in a specific currency and are employed in tandem with payouts as the origin from which funds will be disbursed.
+
+
+        This particular endpoint will return a comprehensive list of your active wallets, showcasing their associated currencies and the most recent updates on available balances.'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_wallets_get_200_response'
+          description: OK
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/openapi.ResponseBodyInternalServerError'
+          description: Internal server error
+      security:
+      - Bearer: []
+      summary: List
+      tags:
+      - Wallet
+components:
+  schemas:
+    _wallets_get_200_response_allOf_data_inner:
+      properties:
+        available:
+          description: The actual available balance
+          example: '2000.99'
+          type: string
+        balance:
+          description: The total balance yet to settle
+          example: '2000.99'
+          type: string
+        currency:
+          description: The ISO 4217 currency code associated with the wallet
+          example: KES
+          format: iso4217
+          type: string
+        id:
+          example: wlt-xxx
+          format: ksuid
+          type: string
+      type: object
+    _wallets_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollectionNoMeta'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/_wallets_get_200_response_allOf_data_inner'
+            type: array
+        type: object
+    openapi.ResponseBodyInternalServerError:
+      properties:
+        code:
+          description: '`INTERNAL_SERVER_ERROR`'
+          example: INTERNAL_SERVER_ERROR
+          type: string
+        message:
+          description: E.g. "An internal error has occurred."
+          example: An internal error has occurred.
+          type: string
+      type: object
+    openapi.ResponseBodySuccessCollectionNoMeta:
+      properties:
+        data:
+          items: {}
+          type: array
+      type: object
+  securitySchemes:
+    Bearer:
+      in: header
+      name: Authorization
+      type: apiKey
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
