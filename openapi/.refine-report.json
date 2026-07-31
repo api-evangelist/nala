@@ -1,0 +1,22 @@
+{
+  "provider": "nala",
+  "sources": [
+    "nala-bank-api-openapi.yml",
+    "nala-lookup-api-openapi.yml",
+    "nala-payment-account-api-openapi.yml",
+    "nala-payout-api-openapi.yml",
+    "nala-wallet-api-openapi.yml"
+  ],
+  "outputs": [
+    "nala-bank-api-openapi.yml",
+    "nala-lookup-api-openapi.yml",
+    "nala-payment-account-api-openapi.yml",
+    "nala-payout-api-openapi.yml",
+    "nala-wallet-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

@@ -1,0 +1,22 @@
+generated: '2026-07-20'
+method: generated
+source: >-
+  Generated from openapi/nala-rafiki-openapi.yml operations and the captured
+  conventions/errors/sandbox artifacts. The Rafiki OpenAPI does not declare
+  operationIds, so each step is grounded in a real METHOD + path present in the
+  spec (verified against openapi/nala-rafiki-openapi.yml).
+api: openapi/nala-rafiki-openapi.yml
+skills:
+- file: nala-create-account-and-send-payout.md
+  name: Create a payment account and send a payout
+  api: openapi/nala-rafiki-openapi.yml
+  operations:
+  - POST /payment-accounts
+  - POST /payouts
+  - GET /payouts/{id}
+- file: nala-lookup-recipient-account.md
+  name: Look up a recipient account before paying
+  api: openapi/nala-rafiki-openapi.yml
+  operations:
+  - GET /banks
+  - GET /lookups/{accountNumber}

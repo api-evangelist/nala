@@ -1,0 +1,73 @@
+generated: '2026-07-20'
+method: searched
+source: https://github.com/RafikiApi/openapi-clients
+api: Rafiki API
+note: >-
+  First-party OpenAPI clients published by the RafikiApi GitHub organization
+  (the org that owns the Rafiki API). They are generated with openapi-generator
+  from the Rafiki OpenAPI and distributed as source in the openapi-clients repo
+  rather than to language package registries; the repo advises they are stubs to
+  expedite setup and not recommended for production use as-is. Marked official
+  because they are first-party, with registry "github-source" to reflect that
+  they are not (as of this pass) published to npm/PyPI/Maven/etc.
+packages:
+- language: javascript
+  registry: github-source
+  name: rafiki-openapi-clients (javascript)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/javascript
+  official: true
+  generated_client: true
+- language: typescript
+  registry: github-source
+  name: rafiki-openapi-clients (typescript-node)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/typescript-node
+  official: true
+  generated_client: true
+- language: python
+  registry: github-source
+  name: rafiki-openapi-clients (python)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/python
+  official: true
+  generated_client: true
+- language: java
+  registry: github-source
+  name: rafiki-openapi-clients (java)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/java
+  official: true
+  generated_client: true
+- language: kotlin
+  registry: github-source
+  name: rafiki-openapi-clients (kotlin)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/kotlin
+  official: true
+  generated_client: true
+- language: csharp
+  registry: github-source
+  name: rafiki-openapi-clients (csharp)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/csharp
+  official: true
+  generated_client: true
+- language: go
+  registry: github-source
+  name: rafiki-openapi-clients (go)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/go
+  official: true
+  generated_client: true
+- language: php
+  registry: github-source
+  name: rafiki-openapi-clients (php)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/php
+  official: true
+  generated_client: true
+- language: ruby
+  registry: github-source
+  name: rafiki-openapi-clients (ruby)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/ruby
+  official: true
+  generated_client: true
+- language: rust
+  registry: github-source
+  name: rafiki-openapi-clients (rust)
+  url: https://github.com/RafikiApi/openapi-clients/tree/main/rust
+  official: true
+  generated_client: true

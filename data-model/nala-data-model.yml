@@ -1,0 +1,67 @@
+generated: '2026-07-20'
+method: derived
+source: https://docs.rafiki.com/llms.txt
+api: Rafiki API
+note: >-
+  Entity-relationship graph derived from Rafiki's documented resources and their
+  descriptions (llms.txt + reference pages). Id prefixes captured where the docs
+  publish them.
+entities:
+  - name: Bank
+    description: A financial institution that owns payment accounts.
+    endpoint: GET /v1/banks
+  - name: Lookup
+    description: Metadata resolved for a mobile money or bank account before payout.
+    endpoint: GET /v1/lookups/{accountNumber}
+  - name: PaymentAccount
+    description: A recipient destination for funds.
+    types: [MOBILE_MONEY, BANK_ACCOUNT, BANK_ACCOUNT_ROUTE, ALIAS]
+    endpoints: [GET /v1/payment-accounts, POST /v1/payment-accounts]
+  - name: Wallet
+    description: A repository of funds in a specific currency; the source of payouts.
+    endpoint: GET /v1/wallets
+  - name: Payout
+    id_prefix: pyt-
+    description: A disbursement of funds from a wallet to a payment account.
+    states: [PENDING, SENT, REVERSED, CANCELLED, FAILED]
+    endpoints: ['GET /v1/payouts', 'POST /v1/payouts', 'GET /v1/payouts/{id}']
+  - name: WalletStatement
+    description: A generated transaction statement for a wallet over a period.
+    states: [PENDING, READY, FAILED]
+    endpoints: ['POST /v1/wallet-statements', 'GET /v1/wallet-statements/{id}']
+  - name: WalletStatementLine
+    description: A single transaction line within a statement.
+    line_types: [COLLECTION_COLLECTED, COLLECTION_CONVERTED, CONVERSION_INITIATED, CONVERSION_CONVERTED, PAYOUT_INITIATED, PAYOUT_FAILED, PAYOUT_REVERSED, PAYOUT_SENT_TO_FAILED, PAYOUT_FAILED_TO_SENT]
+    endpoint: GET /v1/wallet-statements/{id}/lines
+  - name: Webhook
+    id_prefix: wbh-
+    description: An event notification delivered to your endpoint.
+relationships:
+  - from: Payout
+    to: Wallet
+    type: belongs_to
+    via: source wallet (origin of funds)
+  - from: Payout
+    to: PaymentAccount
+    type: belongs_to
+    via: recipient payment account
+  - from: PaymentAccount
+    to: Bank
+    type: belongs_to
+    via: bank (for BANK_ACCOUNT / BANK_ACCOUNT_ROUTE types)
+  - from: WalletStatement
+    to: Wallet
+    type: belongs_to
+    via: wallet
+  - from: WalletStatementLine
+    to: WalletStatement
+    type: belongs_to
+    via: statement
+  - from: WalletStatement
+    to: WalletStatementLine
+    type: has_many
+    via: lines
+  - from: Wallet
+    to: Payout
+    type: has_many
+    via: payouts disbursed from the wallet

@@ -1,0 +1,37 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.rafiki.com/reference/authentication.md
+docs: https://docs.rafiki.com/reference/authentication#scopes
+api: Rafiki API
+model: >-
+  Rafiki scopes are per-API-key permissions selected in the web portal at key
+  creation time (not OAuth2 flow scopes). Each endpoint documents the scope(s)
+  required to call it. Grant only the minimum scopes a key needs.
+scopes:
+  - scope: bank:read
+    description: List banks (financial institutions that own payment accounts).
+    operations: [List banks]
+  - scope: lookup:read
+    description: Look up metadata for a mobile money or bank account before payout.
+    operations: [Get lookups]
+  - scope: payment-account:read
+    description: List payment accounts (recipients).
+    operations: [List payment accounts]
+  - scope: payment-account:write
+    description: Create (or get-or-create) payment accounts. Also required to create payouts.
+    operations: [Create payment accounts, Create payout]
+  - scope: payout:read
+    description: Read/list historical payouts and poll payout state.
+    operations: [Get payout, List payouts]
+  - scope: payout:write
+    description: Create payouts (send money). Requires payment-account:write as well.
+    operations: [Create payout]
+  - scope: wallet:read
+    description: List wallets and their currency balances.
+    operations: [List wallets]
+  - scope: statement:read
+    description: Read wallet statements and list statement lines.
+    operations: [Get statement, List statement lines]
+  - scope: statement:write
+    description: Create (generate) wallet statements.
+    operations: [Create statement]

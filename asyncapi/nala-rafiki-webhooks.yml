@@ -1,0 +1,40 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.rafiki.com/reference/webhooks.md
+api: Rafiki API
+spec_type: Webhooks
+docs: https://docs.rafiki.com/reference/webhooks
+management: https://docs.rafiki.com/docs/webhooks-management
+transport:
+  protocol: HTTPS POST to your configured endpoint
+  content_type: application/json
+  user_agent: Rafiki-Webhooks/1.0
+envelope:
+  id: Unique webhook id (wbh-xxx); use to dedupe
+  type: Event type; determines the shape of data (also in X-Rafiki-Webhook-Type header)
+  data: Event-specific payload
+  created_at: Creation timestamp (RFC3339; not send time)
+headers:
+  X-Rafiki-Webhook-Type: Event type
+  X-Rafiki-Webhook-Signature: 't=<unix>, v1=<hmac-sha256 hex> (may carry multiple v1= during key rotation)'
+signature:
+  algorithm: HMAC-SHA256
+  signed_message: '<timestamp>.<raw JSON body>'
+  key: pre-shared signing secret
+  rotation: old keys retained ~24h; webhook signed with each old key until expiry
+source_ips:
+  production: [34.242.123.185, 54.195.235.178, 63.35.15.80]
+  sandbox: [34.248.57.166, 34.253.137.164, 54.75.142.178]
+retries:
+  attempts: up to 3 additional after first failure
+  schedule: [immediate, ~60s, ~120s]
+  failure_condition: transport error (timeout/DNS) or non-2xx response
+events:
+  - type: payout.state-updated
+    resource: payout
+    description: Dispatched when a payout transitions state (e.g. PENDING -> SENT/FAILED).
+    docs: https://docs.rafiki.com/reference/event-payout-state-updated
+  - type: wallet-statement.state-updated
+    resource: wallet-statement
+    description: Dispatched when a wallet statement transitions state (e.g. PENDING -> READY/FAILED).
+    docs: https://docs.rafiki.com/reference/event-wallet-statement-state-updated

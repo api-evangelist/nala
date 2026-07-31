@@ -1,8 +1,28 @@
 aid: nala
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/nala.png
 name: NALA
-description: 'NALA is a company surfaced as a portfolio company of bessemer-venture-partners and added
-  to the API Evangelist network as a stub for enrichment. Sector: fintech. This profile is a lead awaiting
-  the enrichment pipeline.'
+description: >-
+  NALA is a fintech building cross-border payments infrastructure for emerging
+  markets. Its consumer app is an international money-transfer and multi-currency
+  account used to send money from the UK, US and EU to 35+ countries across
+  Africa and Asia, with 98% of transfers arriving within minutes. NALA's B2B
+  product, Rafiki, is a single API for global payouts and collections: move,
+  collect and settle funds in local currency or stablecoins (USDC/USDT) across
+  the US, UK, Europe, Asia and Africa, reaching 300+ banks and 40+ mobile-money
+  operators with real-time FX, lookups, wallet statements, webhooks and built-in
+  compliance and sanctions screening. Backed by Bessemer Venture Partners.
 url: https://raw.githubusercontent.com/api-evangelist/nala/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -12,16 +32,173 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-20'
 tags:
 - Company
 - Fintech
-apis: []
+- Payments
+- Remittances
+- Money Transfer
+- Payouts
+- Cross-Border Payments
+- Mobile Money
+- Stablecoins
+- Africa
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: nala:nala-bank-api
+  name: NALA Bank API
+  description: The Bank API from NALA — 1 operation(s) for bank.
+  humanURL: https://docs.rafiki.com/
+  baseURL: https://rest.prod.rafiki-api.com/v1
+  tags:
+  - Bank
+  properties:
+  - type: OpenAPI
+    url: openapi/nala-bank-api-openapi.yml
+  - type: Documentation
+    url: https://docs.rafiki.com/docs/introduction
+  - type: APIReference
+    url: https://docs.rafiki.com/reference/welcome
+  - type: GettingStarted
+    url: https://docs.rafiki.com/recipes/create-account-and-send-money
+- aid: nala:nala-lookup-api
+  name: NALA Lookup API
+  description: The Lookup API from NALA — 1 operation(s) for lookup.
+  humanURL: https://docs.rafiki.com/
+  baseURL: https://rest.prod.rafiki-api.com/v1
+  tags:
+  - Lookup
+  properties:
+  - type: OpenAPI
+    url: openapi/nala-lookup-api-openapi.yml
+  - type: Documentation
+    url: https://docs.rafiki.com/docs/introduction
+  - type: APIReference
+    url: https://docs.rafiki.com/reference/welcome
+  - type: GettingStarted
+    url: https://docs.rafiki.com/recipes/create-account-and-send-money
+- aid: nala:nala-payment-account-api
+  name: NALA Payment Account API
+  description: The Payment Account API from NALA — 1 operation(s) for payment account.
+  humanURL: https://docs.rafiki.com/
+  baseURL: https://rest.prod.rafiki-api.com/v1
+  tags:
+  - Payment Account
+  properties:
+  - type: OpenAPI
+    url: openapi/nala-payment-account-api-openapi.yml
+  - type: Documentation
+    url: https://docs.rafiki.com/docs/introduction
+  - type: APIReference
+    url: https://docs.rafiki.com/reference/welcome
+  - type: GettingStarted
+    url: https://docs.rafiki.com/recipes/create-account-and-send-money
+- aid: nala:nala-payout-api
+  name: NALA Payout API
+  description: The Payout API from NALA — 2 operation(s) for payout.
+  humanURL: https://docs.rafiki.com/
+  baseURL: https://rest.prod.rafiki-api.com/v1
+  tags:
+  - Payout
+  properties:
+  - type: OpenAPI
+    url: openapi/nala-payout-api-openapi.yml
+  - type: Documentation
+    url: https://docs.rafiki.com/docs/introduction
+  - type: APIReference
+    url: https://docs.rafiki.com/reference/welcome
+  - type: GettingStarted
+    url: https://docs.rafiki.com/recipes/create-account-and-send-money
+- aid: nala:nala-wallet-api
+  name: NALA Wallet API
+  description: The Wallet API from NALA — 1 operation(s) for wallet.
+  humanURL: https://docs.rafiki.com/
+  baseURL: https://rest.prod.rafiki-api.com/v1
+  tags:
+  - Wallet
+  properties:
+  - type: OpenAPI
+    url: openapi/nala-wallet-api-openapi.yml
+  - type: Documentation
+    url: https://docs.rafiki.com/docs/introduction
+  - type: APIReference
+    url: https://docs.rafiki.com/reference/welcome
+  - type: GettingStarted
+    url: https://docs.rafiki.com/recipes/create-account-and-send-money
 common:
+- type: AgenticAccess
+  url: agentic-access/nala-agentic-access.yml
+- type: DomainSecurity
+  url: security/nala-domain-security.yml
 - type: Website
   url: https://www.nala.com/
+- type: DeveloperPortal
+  url: https://docs.rafiki.com/
+- type: Documentation
+  url: https://docs.rafiki.com/docs/introduction
+- type: APIReference
+  url: https://docs.rafiki.com/reference/welcome
+- type: GettingStarted
+  url: https://docs.rafiki.com/recipes/create-account-and-send-money
+- type: Support
+  url: https://help.nala.money/en/
+- type: Blog
+  url: https://www.nala.com/blog
+- type: GitHubOrganization
+  url: https://github.com/NalaMoney
+- type: StatusPage
+  url: https://status.rafiki.com/
+- type: TermsOfService
+  url: https://www.nala.com/terms-of-service
+- type: PrivacyPolicy
+  url: https://www.nala.com/privacy-policy
+- type: LLMsTxt
+  url: llms/nala-llms.txt
+- type: MCPServer
+  url: mcp/nala-mcp.yml
+- type: Authentication
+  url: authentication/nala-authentication.yml
+- type: OAuthScopes
+  url: scopes/nala-scopes.yml
+- type: Conventions
+  url: conventions/nala-conventions.yml
+- type: Idempotency
+  url: conventions/nala-conventions.yml
+- type: ErrorCatalog
+  url: errors/nala-problem-types.yml
+- type: DeclineCodes
+  url: errors/nala-decline-codes.yml
+- type: Lifecycle
+  url: lifecycle/nala-lifecycle.yml
+- type: Sandbox
+  url: sandbox/nala-sandbox.yml
+- type: Webhooks
+  url: asyncapi/nala-rafiki-webhooks.yml
+- type: Conformance
+  url: conformance/nala-conformance.yml
+- type: DataModel
+  url: data-model/nala-data-model.yml
+- type: Packages
+  url: packages/nala-packages.yml
+- type: SDKs
+  url: packages/nala-packages.yml
+- type: Overlay
+  url: overlays/nala-rafiki-overlay.yaml
+- type: AgentSkill
+  url: skills/nala-create-account-and-send-payout.md
+- type: AgentSkill
+  url: skills/nala-lookup-recipient-account.md
+- type: SignUp
+  url: https://rafiki.com/contact
+- type: Login
+  url: https://app.rafiki.com
+x-enrichment:
+  date: '2026-07-20'
+  status: enriched
+  artifacts_added: 7
+  pass: local-v1

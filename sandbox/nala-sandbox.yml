@@ -1,0 +1,40 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.rafiki.com/docs/testdata.md
+api: Rafiki API
+docs: https://docs.rafiki.com/docs/testdata
+environments:
+  sandbox:
+    host: https://rest.sandbox.rafiki-api.com
+    description: Safe environment to test integration code before going live.
+  production:
+    host: https://rest.prod.rafiki-api.com
+    description: Live environment; use only after thorough sandbox testing.
+key_separation: >-
+  API keys are minted per environment in the Rafiki web portal; the same Bearer
+  key/scope model applies in sandbox and production.
+default_behavior: >-
+  In sandbox, any payout with a valid account number and a complete valid
+  payload succeeds. Use the magic identifiers below to simulate failure states.
+magic_test_values:
+  mobile_money:
+    note: Use a phone number ending with the suffix to simulate the state (any supported country).
+    values:
+      - {suffix: '000100', state_code: FAILED, context: None (generic failure)}
+      - {suffix: '000101', state_code: FAILED, context: PAYMENT_ACCOUNT_INVALID_ACCOUNT_NUMBER}
+      - {suffix: '000102', state_code: FAILED, context: PAYMENT_ACCOUNT_BALANCE_MAXED_OUT}
+      - {suffix: '000103', state_code: FAILED, context: PAYMENT_ACCOUNT_PER_TRANSACTION_LIMIT_REACHED}
+      - {suffix: '000104', state_code: FAILED, context: PAYMENT_ACCOUNT_DAILY_LIMIT_REACHED}
+      - {suffix: '000105', state_code: FAILED, context: PAYMENT_ACCOUNT_MONTHLY_LIMIT_REACHED}
+      - {suffix: '000106', state_code: FAILED, context: PAYMENT_ACCOUNT_LIMIT_REACHED}
+  bank_account:
+    values:
+      - {account_number: '0390195016650', country: any, bank: any, state_code: FAILED, context: None (generic failure)}
+  alias_upi:
+    country: IN
+    network: UPI
+    values:
+      - {identifier: 'generic.failure@upi', state_code: FAILED, context: None (generic failure)}
+      - {identifier: 'account.limit@upi', state_code: FAILED, context: PAYMENT_ACCOUNT_LIMIT_REACHED}
+      - {identifier: 'daily.limit@upi', state_code: FAILED, context: PAYMENT_ACCOUNT_DAILY_LIMIT_REACHED}
+      - {identifier: 'monthly.limit@upi', state_code: FAILED, context: PAYMENT_ACCOUNT_MONTHLY_LIMIT_REACHED}

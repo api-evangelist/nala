@@ -1,0 +1,27 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Rafiki API (NALA)
+  version: 1.0.0
+extends: openapi/nala-rafiki-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: nala
+    x-apievangelist-product: Rafiki API
+    x-apievangelist-description: >-
+      Rafiki by NALA is a single API for global payouts and collections across
+      Africa, Asia and the Americas — create payment accounts (mobile money,
+      bank, alias), disburse payouts from local-currency wallets, look up
+      recipient account metadata, list banks, and generate wallet statements.
+    x-apievangelist-docs: https://docs.rafiki.com/
+    x-apievangelist-conventions: conventions/nala-conventions.yml
+    x-apievangelist-errors: errors/nala-problem-types.yml
+    x-apievangelist-authentication: authentication/nala-authentication.yml
+    x-apievangelist-idempotency: >-
+      Rafiki supports an X-Idempotency-Key request header on write operations
+      (24h replay window); see conventions/nala-conventions.yml and
+      https://docs.rafiki.com/reference/idempotency.
+- target: $.info
+  update:
+    x-apievangelist-webhooks: asyncapi/nala-rafiki-webhooks.yml
+    x-apievangelist-sandbox: https://rest.sandbox.rafiki-api.com/v1

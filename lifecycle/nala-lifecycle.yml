@@ -1,0 +1,17 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.rafiki.com/reference/transport.md
+api: Rafiki API
+versioning:
+  scheme: uri-path
+  current: v1
+  docs: https://docs.rafiki.com/reference/transport
+status_page: https://status.rafiki.com/
+sla:
+  url: null
+  uptime_target: null
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: No published deprecation policy or RFC 8594 Sunset/Deprecation header support found.
+deprecated_operations: []

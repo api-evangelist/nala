@@ -1,0 +1,69 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.rafiki.com/reference/error-codes.md
+api: Rafiki API
+docs: https://docs.rafiki.com/reference/error-codes
+format: custom
+envelope:
+  code: machine-readable error enum
+  message: human-readable description
+  errors: object with granular detail (e.g. errors.fields.<field>[])
+note: >-
+  Rafiki uses a custom JSON error envelope (code/message/errors), not RFC 9457
+  problem+json. HTTP status codes below follow RFC 7231 semantics.
+status_codes:
+  - {status: 200, meaning: Generic success}
+  - {status: 201, meaning: Resource created}
+  - {status: 202, meaning: Accepted; work deferred to an async queue (poll for state)}
+  - {status: 400, meaning: Malformed request / missing or mismatched Content-Type}
+  - {status: 401, meaning: Invalid, expired, or blacklisted API key}
+  - {status: 402, meaning: Wallet lacks required balance}
+  - {status: 403, meaning: API key valid but lacks required scope/permission}
+  - {status: 404, meaning: Resource or referenced ID not found}
+  - {status: 409, meaning: Idempotency conflict / concurrent key use / not-ready}
+  - {status: 422, meaning: Validation error (syntactically valid but invalid values)}
+  - {status: 500, meaning: Server error (logged by Rafiki)}
+  - {status: 503, meaning: Downstream bank/operator/network temporarily unavailable}
+problems:
+  - code: LOOKUP_ACCOUNT_NOT_FOUND
+    status: 404
+    title: Account could not be looked up
+    detail: Provided account identifier could not be resolved; may be invalid, unregistered, or metadata temporarily unavailable (retry in ~5 min).
+    operation: GET /v1/lookups/{accountNumber}
+  - code: IDEMPOTENCY_RACE
+    status: 409
+    title: Concurrent idempotency key
+    detail: Two or more requests used the same idempotency key concurrently; only the winning request is processed.
+  - code: IDEMPOTENCY_KEY_ALREADY_USED
+    status: 409
+    title: Idempotency key already used
+    detail: Server could not cache the prior response; contact support if encountered.
+  - code: WALLET_INSUFFICIENT_BALANCE
+    status: 402
+    title: Insufficient wallet balance
+    detail: The source wallet lacks the balance required to fund the payout.
+    operation: POST /v1/payouts
+  - code: PAYOUT_BANK_TEMPORARILY_UNAVAILABLE
+    status: 503
+    title: Recipient bank temporarily unavailable
+    detail: The receiving bank cannot accept payouts for the specified country right now.
+    operation: POST /v1/payouts
+  - code: PAYOUT_MOBILE_MONEY_TEMPORARILY_UNAVAILABLE
+    status: 503
+    title: Recipient mobile money operator temporarily unavailable
+    detail: The receiving mobile money operator cannot accept payouts right now.
+    operation: POST /v1/payouts
+  - code: PAYOUT_ALIAS_NETWORK_TEMPORARILY_UNAVAILABLE
+    status: 503
+    title: Recipient alias network temporarily unavailable
+    detail: The receiving alias network (e.g. UPI) cannot accept payouts right now.
+    operation: POST /v1/payouts
+  - code: VALIDATION_FAILED
+    status: 422
+    title: Validation failed
+    detail: One or more request properties are invalid for the resource (see errors.fields).
+  - code: STATEMENT_NOT_READY
+    status: 409
+    title: Statement not ready
+    detail: The wallet statement is still PENDING; wait until state is READY before listing lines.
+    operation: GET /v1/wallet-statements/{id}/lines

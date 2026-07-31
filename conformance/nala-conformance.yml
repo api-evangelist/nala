@@ -1,0 +1,32 @@
+generated: '2026-07-20'
+method: derived
+source: https://docs.rafiki.com/reference/transport.md
+api: Rafiki API
+note: >-
+  Cross-cutting standards conformance derived from Rafiki's published reference
+  docs. Not a substitute for a formal compliance program (see security posture).
+standards:
+  - id: rfc7231-http-methods
+    conforms: true
+    evidence: Docs cite RFC 7231 HTTP method semantics (GET/POST/PUT/DELETE).
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: Uses a custom code/message/errors envelope, not application/problem+json.
+  - id: idempotency-keys
+    conforms: true
+    evidence: X-Idempotency-Key header with 24h cache and race detection.
+  - id: cursor-pagination
+    conforms: true
+    evidence: meta.paging cursors (paging_after/paging_limit).
+  - id: oauth2
+    conforms: false
+    evidence: Auth is an HTTP Bearer API key with per-key scopes, not OAuth2 flows.
+  - id: webhook-hmac-signatures
+    conforms: true
+    evidence: X-Rafiki-Webhook-Signature HMAC-SHA256 with timestamped, versioned signatures.
+  - id: rfc3339-datetimes
+    conforms: true
+    evidence: Statement period and timestamps use RFC3339 datetimes.
+  - id: kyc-sanctions-screening
+    conforms: true
+    evidence: Payouts undergo compliance/KYC and sanctions screening (COMPLIANCE_REVIEW, sanctions-hit contexts).

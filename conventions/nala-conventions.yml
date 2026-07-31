@@ -1,0 +1,52 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.rafiki.com/reference/transport.md
+api: Rafiki API
+docs: https://docs.rafiki.com/reference/transport
+transport:
+  style: REST/JSON over HTTPS (TLS)
+  methods: [GET, POST, PUT, DELETE]
+  content_type: application/json (required on POST/PUT with a body; else HTTP 400)
+  hosts:
+    production: https://rest.prod.rafiki-api.com
+    sandbox: https://rest.sandbox.rafiki-api.com
+  version: v1 (URI path prefix, e.g. /v1/banks)
+authentication:
+  style: 'HTTP Bearer API key (Authorization: Bearer {apikey})'
+  scoped: true
+  ref: authentication/nala-authentication.yml
+response_envelope:
+  success:
+    data: object (single entity) or array (collection)
+    meta: object (pagination, total counts, resource metadata)
+  error:
+    code: enum (machine-readable error category; see errors/nala-problem-types.yml)
+    message: human-readable failure description
+    errors: object of key/value granular failure detail (e.g. errors.fields)
+idempotency:
+  supported: true
+  header: X-Idempotency-Key
+  scope: per-URL + key; server caches the response and replays it on retry
+  retention: 24 hours (TTL); cached responses may be purged after
+  format: no strict format; UUIDv4 recommended; max 255 chars
+  race_behavior: concurrent same-key requests return IDEMPOTENCY_RACE (HTTP 409)
+  ref: https://docs.rafiki.com/reference/idempotency
+pagination:
+  style: cursor
+  request_params: [paging_after, paging_limit]
+  response_fields:
+    - meta.paging.cursors.after
+    - meta.paging.next
+  ref: https://docs.rafiki.com/reference/pagination
+async_processing:
+  pattern: >-
+    Payouts and wallet-statement generation are accepted with HTTP 202 and
+    processed asynchronously. Poll the resource (GET .../{id}) for state, or
+    subscribe to webhooks for state-updated events.
+webhooks:
+  supported: true
+  ref: asyncapi/nala-rafiki-webhooks.yml
+error_handling:
+  format: custom envelope (code/message/errors) — NOT RFC 9457 problem+json
+  ref: errors/nala-problem-types.yml
+lifecycle_ref: lifecycle/nala-lifecycle.yml

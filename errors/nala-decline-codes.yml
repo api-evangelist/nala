@@ -1,0 +1,33 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.rafiki.com/reference/post_payouts.md
+api: Rafiki API
+docs: https://docs.rafiki.com/reference/post_payouts
+envelope_field: payout.state.context (context code on a PENDING or FAILED payout)
+note: >-
+  Rafiki payouts are asynchronous. The payout `state` (PENDING, SENT, REVERSED,
+  CANCELLED, FAILED) carries a `context` code explaining a PENDING hold or a
+  FAILED outcome. These context codes are the payments-specific decline surface,
+  complementing the API-level error codes in nala-problem-types.yml.
+payout_states:
+  - {state: PENDING, description: Accepted and awaiting processing}
+  - {state: SENT, description: Successfully processed; recipient should have the funds}
+  - {state: REVERSED, description: Manual reversal completed (no programmatic API; contact support)}
+  - {state: CANCELLED, description: Manual cancellation completed before delivery (contact support)}
+  - {state: FAILED, description: Funds did not reach the recipient; see context}
+pending_contexts:
+  - {code: COMPLIANCE_REVIEW, meaning: Payout is under compliance review and needs additional verification}
+decline_codes:
+  - {code: WALLET_INSUFFICIENT_BALANCE, meaning: Source wallet lacks funds to process the payout, action: Top up the wallet and retry}
+  - {code: PAYMENT_ACCOUNT_INVALID_ACCOUNT_NUMBER, meaning: Recipient account number is invalid, action: Correct the account number / re-run a lookup}
+  - {code: PAYMENT_ACCOUNT_BALANCE_MAXED_OUT, meaning: Recipient payment account balance has reached its maximum, action: Recipient must free capacity; try later}
+  - {code: PAYMENT_ACCOUNT_PER_TRANSACTION_LIMIT_REACHED, meaning: Amount exceeds the per-transaction limit for the account, action: Split into smaller amounts}
+  - {code: PAYMENT_ACCOUNT_DAILY_LIMIT_REACHED, meaning: Daily limit reached or would be exceeded, action: Retry the next day}
+  - {code: PAYMENT_ACCOUNT_WEEKLY_LIMIT_REACHED, meaning: Weekly limit reached or would be exceeded, action: Retry the next week}
+  - {code: PAYMENT_ACCOUNT_MONTHLY_LIMIT_REACHED, meaning: Monthly limit reached or would be exceeded, action: Retry the next month}
+  - {code: PAYMENT_ACCOUNT_LIMIT_REACHED, meaning: A limit was reached but the specific one is unknown, action: Contact support / retry later}
+  - {code: ENTITY_PAYMENT_ACCOUNT_KYC_SANCTIONS_HIT, meaning: Recipient payment account hit a sanctions list during screening, action: Cannot proceed; recipient screening failure}
+  - {code: ENTITY_SENDER_KYC_SANCTIONS_HIT, meaning: Sender hit a sanctions list during screening, action: Cannot proceed; sender screening failure}
+  - {code: ENTITY_KYC_SANCTIONS_HIT_EXPIRED, meaning: Sanctions hit not cleared within the defined threshold, action: Resubmit after clearance}
+  - {code: PROVIDER_NETWORK_ISSUE, meaning: Temporary issue with the provider network/systems, action: Retry later}
+  - {code: PAYMENT_ACCOUNT_NOT_SUPPORTED_FOR_REMITTANCE, meaning: Recipient account not eligible for international remittance, action: Use an eligible recipient account}

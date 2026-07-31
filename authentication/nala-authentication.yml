@@ -1,0 +1,40 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.rafiki.com/reference/authentication.md
+docs: https://docs.rafiki.com/reference/authentication
+api: Rafiki API
+summary:
+  types: [http]
+  http_schemes: [bearer]
+  api_key_in: [header]
+  oauth2_flows: []
+  notes: >-
+    Rafiki authenticates every request with an API key presented as an HTTP
+    Bearer token in the Authorization header. Keys are minted in the Rafiki web
+    portal, are scoped (fine-grained permissions per key), and can carry an
+    optional expiry (minimum TTL 180 days). Key values are shown once and never
+    stored by Rafiki. Key format is a three-part dotted token (xxx.xxx.xxx).
+schemes:
+  - name: bearerApiKey
+    type: http
+    scheme: bearer
+    in: header
+    header: Authorization
+    format: 'Bearer {apikey}'
+    key_format: xxx.xxx.xxx
+    scoped: true
+    expiry: optional (min 180 days)
+    provisioning: Rafiki web portal (Settings > API keys)
+    sources: [docs.rafiki.com/reference/authentication]
+scopes_summary:
+  model: per-key scopes (not OAuth2 flows); scopes are selected at key creation
+  scopes:
+    - bank:read
+    - lookup:read
+    - payment-account:read
+    - payment-account:write
+    - payout:read
+    - payout:write
+    - wallet:read
+    - statement:read
+    - statement:write
