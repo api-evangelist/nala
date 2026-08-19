@@ -1,0 +1,61 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Resources Bank Lookup API",
+    "version": "1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Lookup",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://rest.sandbox.rafiki-api.com/v1/lookups/:accountNumber",
+            "params": [
+              {
+                "name": "payment_account_type",
+                "value": "",
+                "type": "query",
+                "description": "The payment account type to lookup for"
+              },
+              {
+                "name": "bank_id",
+                "value": "",
+                "type": "query",
+                "description": "If payment_account_type is BANK_ACCOUNT, this will be a mandatory field representing the bank id (bnk-xxx) used to identify which bank the account number belongs to"
+              },
+              {
+                "name": "accountNumber",
+                "value": "",
+                "type": "path",
+                "description": "The account number, that is either the mobile money number or bank account number"
+              },
+              {
+                "name": "operator",
+                "value": "",
+                "type": "query",
+                "description": "If payment_account_type is MOBILE_MONEY, this will be a mandatory field representing the mobile money operator"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "The lookup resource facilitates the retrieval of metadata associated with mobile money or bank accounts. For instance, prior to creating payment accounts, you can utilize this endpoint to validate whether an account number corresponds to a specific business or individual.\n\nThis functionality proves especially valuable in ensuring that only validated payment accounts are utilized; for example, when integrated with other processes, such as payouts, it helps mitigate the risk of costly reversals or"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

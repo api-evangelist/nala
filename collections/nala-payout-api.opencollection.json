@@ -1,0 +1,113 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Resources Bank Payout API",
+    "version": "1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payout",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://rest.sandbox.rafiki-api.com/v1/payouts",
+            "params": [
+              {
+                "name": "created_at_from",
+                "value": "",
+                "type": "query",
+                "description": "Filters for payouts created from the specified datetime. The expected format can be either a standard date (YYYY-MM-DD) that defaults to 00:00:00 UTC or a valid RFC3339 string, including time and/or offset information."
+              },
+              {
+                "name": "created_at_to",
+                "value": "",
+                "type": "query",
+                "description": "Filters for payouts created before the specified datetime. The expected format can be either a standard date (YYYY-MM-DD) that defaults to 23:59:59 UTC or a valid RFC3339 string, including time and/or offset information."
+              },
+              {
+                "name": "paging_limit",
+                "value": "",
+                "type": "query",
+                "description": "The count of items returned as part of the pagination cursor iteration, minimum value is 1 and maximum 50"
+              },
+              {
+                "name": "paging_after",
+                "value": "",
+                "type": "query",
+                "description": "The base64 URL encoded cursor used to access the next set of paginated results"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Using this endpoint, you can list all your historical payouts with an optional dates filter. Considering that the returned data may contain thousands of records, the results will be paginated with a cursor [(see pagination docs)](pagination), allowing you to scroll through the data using multiple requests as necessary.\n\n\n\n\n"
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://rest.sandbox.rafiki-api.com/v1/payouts",
+            "headers": [
+              {
+                "name": "X-Idempotency-Key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "The payout resource finds its application in various scenarios where funds need to be disbursed electronically; For example, but not limited to, money remittance services or businesses that need to disburse salaries to their employees.\n\nRegardless of your specific use case, this endpoint has you covered, offering a versatile API to facilitate money disbursement from your [local wallets](get_wallets) to designated recipients (a.k.a [payment accounts](post_payment-accounts)).\n\n> ℹ️ Lifecycle\n>\n> I"
+        },
+        {
+          "info": {
+            "name": "Get",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://rest.sandbox.rafiki-api.com/v1/payouts/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The Payout ID (pyt-xxx) or the custom_id provided at the time of payout creation"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint enables the retrieval of a previously accepted payout using its unique ID (`pyt-xxx`) or the `custom_id` submitted when creating it. Its primary purpose is to periodically check for changes in the payout status.\n\nTo learn more about the lifecycle of payouts, please refer to the dedicated section under the [Send Money](post_payouts) endpoint.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

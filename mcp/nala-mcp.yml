@@ -7,21 +7,21 @@ server:
   name: rafiki-api-documentation
   transport: http
   url: https://docs.rafiki.com/mcp
-  description: >-
-    Rafiki's remote MCP server. Gives AI editors (Cursor, Windsurf) and general
-    tools (Claude Desktop) access to Rafiki documentation search and code
-    generation for Rafiki API integrations.
+  description: Rafiki's remote MCP server. Gives AI editors (Cursor, Windsurf) and general tools (Claude
+    Desktop) access to Rafiki documentation search and code generation for Rafiki API integrations.
 capabilities:
-  - Documentation search
-  - Code generation assistance for Rafiki API integrations
+- Documentation search
+- Code generation assistance for Rafiki API integrations
 client_config_example:
   mcpServers:
     rafiki-api-documentation:
       url: https://docs.rafiki.com/mcp
-notes: >-
-  This is a documentation MCP server (search + codegen over the docs), not a
-  transactional tool server that executes payouts. Underlying API operations
-  the docs cover (candidate tool surface): list_banks, lookup_account,
-  list_payment_accounts, create_payment_account, list_payouts, create_payout,
-  get_payout, list_wallets, create_wallet_statement, get_wallet_statement,
-  list_wallet_statement_lines.
+notes: 'This is a documentation MCP server (search + codegen over the docs), not a transactional tool
+  server that executes payouts. Underlying API operations the docs cover (candidate tool surface): list_banks,
+  lookup_account, list_payment_accounts, create_payment_account, list_payouts, create_payout, get_payout,
+  list_wallets, create_wallet_statement, get_wallet_statement, list_wallet_statement_lines.'
+deployment:
+  mode: remote
+  verified: searched
+  checked: '2026-08-12'
+  source: catalog MCP census

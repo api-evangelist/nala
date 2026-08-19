@@ -1,0 +1,520 @@
+{
+  "item": [
+    {
+      "id": "ca29c864-10d5-45d2-8611-28d891f5ed35",
+      "name": "Payment Account",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2b041a06-68d9-45c1-a8b3-0134dd89feae",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Using this endpoint, you can list all your payment accounts ordered by their creation date in descending order. Considering that the returned data may contain thousands of records, the results will be paginated with a cursor [(see pagination docs)](pagination), allowing you to scroll through the data using multiple requests as necessary.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "paging_limit",
+                  "value": "<integer>",
+                  "description": "The count of items returned as part of the pagination cursor iteration, minimum value is 1 and maximum 50"
+                },
+                {
+                  "disabled": false,
+                  "key": "paging_after",
+                  "value": "<string>",
+                  "description": "The base64 URL encoded cursor used to access the next set of paginated results"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "637a3c57-adb5-4fc1-ad76-4610e0a0ff05",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "paging_limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "paging_after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"bank_account\": {\n        \"bank_id\": \"bnk-xxx\",\n        \"number\": \"string\"\n      },\n      \"country\": \"KE\",\n      \"created_at\": \"2006-01-02T15:04:05Z07:00\",\n      \"holder\": {\n        \"name\": \"string\",\n        \"type\": \"BUSINESS\"\n      },\n      \"id\": \"pac-xxx\",\n      \"mobile_money\": {\n        \"number\": \"string\",\n        \"operator\": \"SAFARICOM\"\n      },\n      \"type\": \"MOBILE_MONEY\"\n    },\n    {\n      \"bank_account\": {\n        \"bank_id\": \"bnk-xxx\",\n        \"number\": \"string\"\n      },\n      \"country\": \"KE\",\n      \"created_at\": \"2006-01-02T15:04:05Z07:00\",\n      \"holder\": {\n        \"name\": \"string\",\n        \"type\": \"INDIVIDUAL\"\n      },\n      \"id\": \"pac-xxx\",\n      \"mobile_money\": {\n        \"number\": \"string\",\n        \"operator\": \"SAFARICOM\"\n      },\n      \"type\": \"MOBILE_MONEY\"\n    }\n  ],\n  \"meta\": {\n    \"paging\": {\n      \"cursors\": {\n        \"after\": \"cGFjLTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw==\"\n      },\n      \"next\": \"https://rest.sandbox.rafiki-api.com/v1/payment-accounts?paging_after=cGFjLTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw%3D%3D&paging_limit=15\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "273bb85e-a6d0-4c08-9144-6127cdf6268a",
+              "name": "Validation failed, see [error codes](error-codes#validation_failed-http-422)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "paging_limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "paging_after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"errors\": {\n    \"fields\": {\n      \"key_0\": [\n        \"string\",\n        \"string\"\n      ],\n      \"key_1\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  },\n  \"message\": \"Validation failed.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f19799f6-5f0e-45ae-94d7-88c654e506fb",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "paging_limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "paging_after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"An internal error has occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f40fdb08-6607-40fb-8c01-d596a5d57d29",
+          "name": "Get or create",
+          "request": {
+            "name": "Get or create",
+            "description": {
+              "content": "A payment account is a uniquely identifiable entity that serves the purpose of a recipient to send money to (e.g. a remittance recipient).\n\nThis endpoint allows you to create payment accounts of both **Mobile Money** and **Bank Account** types, which can subsequently serve as recipient accounts for making [payouts](post_payouts).\n\n> 💁\n>\n> Although HTTP POST is not inherently idempotent, with this endpoint, you can confidently retry the same request without inadvertently creating duplicate records. Our process involves checking the existence of the payment account first. If it exists, we promptly respond with a `200 OK` status. Otherwise, we proceed to create a new one and respond with a `201 Created` status. In both scenarios, the structure of the response body will remain identical.\n\n### Mobile Money\n\nThe \"mobile money\" type refers to accounts registered with telecom companies (a.k.a operators) like SAFARICOM in Kenya, and it necessitates a valid mobile number for identification of the payment account within that telecom provider.\n\nThe following table outlines the operators supported by our API for each specific country.\n\n\n| Country   | Operators                            |\n| --------- | ------------------------------------ |\n| 🇰🇪 KE     | SAFARICOM, AIRTEL                    |\n| 🇹🇿 TZ     | VODACOM, AIRTEL, TIGO, HALOTEL, TTCL |\n| 🇷🇼 RW     | AIRTEL, MTN                          |\n| 🇬🇭 GH     | AIRTEL, MTN, TIGO, VODAFONE          |\n| 🇺🇬 UG     | AIRTEL, MTN                          |\n| 🇨🇮 CI     | MTN, ORANGE, MOOV                    |\n| 🇸🇳 SN     | ORANGE, FREE, EXPRESSO               |\n| 🇨🇲 CM     | MTN, ORANGE                          |\n\n### Bank account\n\nThe \"bank account\" type is designated for conventional accounts registered with bank institutions, such as \"Equity Bank.\" It comprises an account number and the associated bank ID, where accounts are registered.\n\nWe provide support for numerous banks in each country. Documenting each of them here would be impractical. Therefore, we recommend utilizing the dedicated [/v1/banks](get_banks) endpoint to access the most current and accurate list of banks.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payment-accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bank_account\": {\n    \"bank_id\": \"<ksuid>\",\n    \"number\": \"<alphanum>\"\n  },\n  \"country\": \"<iso3166 alpha-2>\",\n  \"holder\": {\n    \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n    \"type\": \"<string>\"\n  },\n  \"mobile_money\": {\n    \"number\": \"<e164>\",\n    \"operator\": \"<string>\"\n  },\n  \"type\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0b3f30fe-da4d-4ba2-9c69-f91444ea7d91",
+              "name": "The already existing payment account was returned",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bank_account\": {\n    \"bank_id\": \"bnk-xxx\",\n    \"number\": \"12345678\"\n  },\n  \"country\": \"KE\",\n  \"holder\": {\n    \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n    \"type\": \"<string>\"\n  },\n  \"mobile_money\": {\n    \"number\": \"<e164>\",\n    \"operator\": \"<string>\"\n  },\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"bank_account\": {\n      \"bank_id\": \"bnk-xxx\",\n      \"number\": \"string\"\n    },\n    \"country\": \"KE\",\n    \"created_at\": \"2006-01-02T15:04:05Z07:00\",\n    \"holder\": {\n      \"name\": \"string\",\n      \"type\": \"BUSINESS\"\n    },\n    \"id\": \"pac-xxx\",\n    \"mobile_money\": {\n      \"number\": \"string\",\n      \"operator\": \"SAFARICOM\"\n    },\n    \"type\": \"MOBILE_MONEY\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "11c8c0b3-3917-434d-9139-0bcb883e8209",
+              "name": "The payment account was created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bank_account\": {\n    \"bank_id\": \"bnk-xxx\",\n    \"number\": \"12345678\"\n  },\n  \"country\": \"KE\",\n  \"holder\": {\n    \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n    \"type\": \"<string>\"\n  },\n  \"mobile_money\": {\n    \"number\": \"<e164>\",\n    \"operator\": \"<string>\"\n  },\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"bank_account\": {\n      \"bank_id\": \"bnk-xxx\",\n      \"number\": \"string\"\n    },\n    \"country\": \"KE\",\n    \"created_at\": \"2006-01-02T15:04:05Z07:00\",\n    \"holder\": {\n      \"name\": \"string\",\n      \"type\": \"BUSINESS\"\n    },\n    \"id\": \"pac-xxx\",\n    \"mobile_money\": {\n      \"number\": \"string\",\n      \"operator\": \"SAFARICOM\"\n    },\n    \"type\": \"MOBILE_MONEY\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3f7a905a-8378-4068-8264-838cdb14dfc9",
+              "name": "Validation failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bank_account\": {\n    \"bank_id\": \"bnk-xxx\",\n    \"number\": \"12345678\"\n  },\n  \"country\": \"KE\",\n  \"holder\": {\n    \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n    \"type\": \"<string>\"\n  },\n  \"mobile_money\": {\n    \"number\": \"<e164>\",\n    \"operator\": \"<string>\"\n  },\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"errors\": {\n    \"fields\": {\n      \"key_0\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  },\n  \"message\": \"Validation failed.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b3ca4d67-0757-4b27-942f-810013491e84",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payment-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bank_account\": {\n    \"bank_id\": \"bnk-xxx\",\n    \"number\": \"12345678\"\n  },\n  \"country\": \"KE\",\n  \"holder\": {\n    \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n    \"type\": \"<string>\"\n  },\n  \"mobile_money\": {\n    \"number\": \"<e164>\",\n    \"operator\": \"<string>\"\n  },\n  \"type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"An internal error has occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://rest.sandbox.rafiki-api.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "658ad171-b3ef-4569-bd01-084f89451dbd",
+    "name": "Resources Bank Payment Account API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Resources Bank API",
+    "version": "1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Bank",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://rest.sandbox.rafiki-api.com/v1/banks",
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Within the scope of this API, the \"Bank\" resource serves the purpose of identifying the financial institutions that own payment accounts.\n\nThis endpoint enables you to retrieve the list of banks provided by our API.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

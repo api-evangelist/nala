@@ -1,0 +1,916 @@
+{
+  "item": [
+    {
+      "id": "be1acbd8-3ef9-43c4-aecb-98a5ecb415b9",
+      "name": "Payout",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "014430da-2203-436c-a4eb-70c425b8c263",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Using this endpoint, you can list all your historical payouts with an optional dates filter. Considering that the returned data may contain thousands of records, the results will be paginated with a cursor [(see pagination docs)](pagination), allowing you to scroll through the data using multiple requests as necessary.\n\n\n\n\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payouts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "created_at_from",
+                  "value": "<string>",
+                  "description": "Filters for payouts created from the specified datetime. The expected format can be either a standard date (YYYY-MM-DD) that defaults to 00:00:00 UTC or a valid RFC3339 string, including time and/or offset information."
+                },
+                {
+                  "disabled": false,
+                  "key": "created_at_to",
+                  "value": "<string>",
+                  "description": "Filters for payouts created before the specified datetime. The expected format can be either a standard date (YYYY-MM-DD) that defaults to 23:59:59 UTC or a valid RFC3339 string, including time and/or offset information."
+                },
+                {
+                  "disabled": false,
+                  "key": "paging_limit",
+                  "value": "<integer>",
+                  "description": "The count of items returned as part of the pagination cursor iteration, minimum value is 1 and maximum 50"
+                },
+                {
+                  "disabled": false,
+                  "key": "paging_after",
+                  "value": "<string>",
+                  "description": "The base64 URL encoded cursor used to access the next set of paginated results"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8d4367b5-e2fb-48a9-8186-e63a68622356",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_at_from",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_at_to",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "paging_limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "paging_after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"amount\": {\n        \"currency\": \"KES\",\n        \"value\": \"2000.99\"\n      },\n      \"created_at\": \"2006-01-02T15:04:05Z07:00\",\n      \"custom_id\": \"custom-id-xxx\",\n      \"id\": \"pyt-xxx\",\n      \"on_behalf_of\": [\n        \"[\\\"org-xxx\\\"]\"\n      ],\n      \"payment_account_id\": \"pac-xxx\",\n      \"purpose\": \"REMITTANCE\",\n      \"receipt\": \"ref-xxx (format changes depending on the telco/bank)\",\n      \"sender\": {\n        \"address\": {\n          \"city\": \"Roma\",\n          \"country\": \"IT\",\n          \"line_1\": \"Piazza del Colosseo\",\n          \"line_2\": \"1\",\n          \"line_3\": \"\",\n          \"postal_code\": \"string\"\n        },\n        \"individual\": {\n          \"dob\": \"1970-01-01\",\n          \"identity_document\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"name\": \"Mario Rossi\",\n        \"type\": \"INDIVIDUAL\"\n      },\n      \"state\": {\n        \"code\": \"PENDING\",\n        \"context\": \"string\"\n      },\n      \"wallet_id\": \"wlt-xxx\"\n    },\n    {\n      \"amount\": {\n        \"currency\": \"KES\",\n        \"value\": \"2000.99\"\n      },\n      \"created_at\": \"2006-01-02T15:04:05Z07:00\",\n      \"custom_id\": \"custom-id-xxx\",\n      \"id\": \"pyt-xxx\",\n      \"on_behalf_of\": [\n        \"[\\\"org-xxx\\\"]\"\n      ],\n      \"payment_account_id\": \"pac-xxx\",\n      \"purpose\": \"REMITTANCE\",\n      \"receipt\": \"ref-xxx (format changes depending on the telco/bank)\",\n      \"sender\": {\n        \"address\": {\n          \"city\": \"Roma\",\n          \"country\": \"IT\",\n          \"line_1\": \"Piazza del Colosseo\",\n          \"line_2\": \"1\",\n          \"line_3\": \"\",\n          \"postal_code\": \"string\"\n        },\n        \"individual\": {\n          \"dob\": \"1970-01-01\",\n          \"identity_document\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"name\": \"Mario Rossi\",\n        \"type\": \"INDIVIDUAL\"\n      },\n      \"state\": {\n        \"code\": \"PENDING\",\n        \"context\": \"string\"\n      },\n      \"wallet_id\": \"wlt-xxx\"\n    }\n  ],\n  \"meta\": {\n    \"paging\": {\n      \"cursors\": {\n        \"after\": \"dHJ4LTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw==\"\n      },\n      \"next\": \"https://rest.sandbox.rafiki-api.com/v1/payouts?paging_after=dHJ4LTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw%3D%3D&paging_limit=10\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "437ca5bd-a97f-4061-9fdb-1cfa032a740a",
+              "name": "Validation failed, see [error codes](error-codes#validation_failed-http-422)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_at_from",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_at_to",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "paging_limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "paging_after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"errors\": {\n    \"fields\": {\n      \"key_0\": [\n        \"string\",\n        \"string\"\n      ],\n      \"key_1\": [\n        \"string\",\n        \"string\"\n      ],\n      \"key_2\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  },\n  \"message\": \"Validation failed.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "03b4138f-ac92-4367-88f8-253041476208",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_at_from",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_at_to",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "paging_limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "paging_after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"An internal error has occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ae299c8b-e058-4829-a61b-8e480699ebed",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "The payout resource finds its application in various scenarios where funds need to be disbursed electronically; For example, but not limited to, money remittance services or businesses that need to disburse salaries to their employees.\n\nRegardless of your specific use case, this endpoint has you covered, offering a versatile API to facilitate money disbursement from your [local wallets](get_wallets) to designated recipients (a.k.a [payment accounts](post_payment-accounts)).\n\n> ℹ️ Lifecycle\n>\n> If the request you submit meets our minimum validation standards for processing the payout, our server will accept the request. It will defer the execution to a background asynchronous process, and in response, send you an HTTP 202 status code, along with the payout unique identifier.\n> <br>\n> Upon acceptance, the payout is marked as pending. Your client program will need to poll at intervals to [query the payout state](get_payouts-id) and determine whether it has succeeded or not. After the payout is completed, provided [webhook notifications](webhooks) are set up, Rafiki will also dispatch [payout.state-updated](payoutstate-updated) events\n> <br>\n>\n> <details>\n>  <summary>Payout States</summary>\n> <br>\n>  <table>\n>    <thead>\n>        <tr>\n>            <th>State</th>\n>            <th>Description</th>\n>        </tr>\n>    </thead>\n>    <tbody>\n>        <tr>\n>            <th>⏳<br>PENDING</th>\n>            <th>Your payout has been accepted, and it is currently awaiting processing.</th>\n>        </tr>\n>        <tr>\n>           <th>🎉<br>SENT</th>\n>           <th>The payout has been successfully processed, and the intended recipient should have received the funds.</th>\n>        </tr>\n>        <tr>\n>           <th>🔙<br>REVERSED</th>\n>           <th>Upon reaching the \"SENT\" state, you can request a manual reversal (for instance, if funds were sent to the wrong recipient) by contacting our support team. Please be aware that there is no programmatic API available for this process yet. This state indicates a successful reversal.</th>\n>        </tr>\n>        <tr>\n>           <th>🙅<br>CANCELLED</th>\n>           <th>If the payout has not yet reached the intended recipient, you have the option to request manual cancellation by reaching out to our support team (please note that there is no programmatic API for this yet). This state signifies that the payout has been successfully canceled.</th>\n>        </tr>\n>        <tr>\n>           <th>💔<br>FAILED</th>\n>           <th>\n>               The funds did not reach the intended recipient due to a failure. If the \"context\" property does not provide specific information about the reason for the failure, please contact our customer support for assistance.\n>           </th>\n>        </tr>\n>    </tbody>\n>  </table>\n>  </details>\n> <br>\n> <details>\n>  <summary>Payout state context</summary>\n> <br>\n> When a payout fails, the \"context\" property of the state object will provide additional information about the reason for the failure. The table below outlines the possible values for this property.\n>\n> #### `WALLET_INSUFFICIENT_BALANCE`\n>\n> The selected wallet currently doesn't have enough money to process the payout. <br><br>\n>\n> #### `PAYMENT_ACCOUNT_INVALID_ACCOUNT_NUMBER`\n>\n> The account number provided is invalid. <br><br>\n>\n> #### `PAYMENT_ACCOUNT_BALANCE_MAXED_OUT`\n>\n> The payment account balance has reached the maximum allowed. <br><br>\n>\n> #### `PAYMENT_ACCOUNT_PER_TRANSACTION_LIMIT_REACHED`\n>\n> The amount to be sent exceeds the maximum allowed per transaction for this payment account <br><br>\n>\n> #### `PAYMENT_ACCOUNT_DAILY_LIMIT_REACHED`\n>\n> The payment account has reached the daily limit or would reach it by processing this payout. <br><br>\n>\n> #### `PAYMENT_ACCOUNT_MONTHLY_LIMIT_REACHED`\n>\n> The payment account has reached the monthly limit or would reach it by processing this payout. <br><br>\n>\n> #### `PAYMENT_ACCOUNT_LIMIT_REACHED`\n>\n> The payment account has reached a limit but we don't know which one. <br><br>\n>\n>  </details>\n\n> 📘 Payout amount limits\n>\n> Depending on the payment account type and destination currency, different transactions amount limits apply.\n> <br>\n> Such limits might be enforced for compliance reasons or mandated by the banking authority that owns the payment account or the country in which the account resides.\n> <br>\n> <details>\n> <summary>Per transaction limits</summary>\n> <br>\n> <table>\n>     <thead>\n>         <th>Country</th>\n>         <th>Minimum</th>\n>         <th>Maximum</th>\n>    </thead>\n>    <tbody>\n>          <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇰🇪 Kenya</td>\n>             <td>KSh 140</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Bank Account</th>\n>                         <th>Mobile Money</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td>KSh 950,000</td>\n>                             <td>KSh 250,000</td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>         <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇹🇿 Tanzania</td>\n>             <td>TSh 2,500</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Bank Account</th>\n>                         <th>Mobile Money</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td>TSh 20,000,000</td>\n>                             <td>TSh 5,000,000</td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>         <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇷🇼 Rwanda</td>\n>             <td>R&#x20A3; 500</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Mobile Money</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td style=\"text-align: center; vertical-align: middle;\">\n>                                 <strong>MTN</strong> R&#x20A3; 2,000,000 <br>\n>                                 <strong>Airtel</strong> R&#x20A3; 500,000 <br>\n>                             </td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>         <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇳🇬 Nigeria</td>\n>             <td>&#x20A6; 100</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Bank Account</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td>&#x20A6; 50,000,000</td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>         <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇬🇭 Ghana</td>\n>             <td>&#8373; 10</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Bank Account</th>\n>                         <th>Mobile Money</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td>&#8373; 50,000</td>\n>                             <td>&#8373; 15,000</td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>         <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇺🇬 Uganda</td>\n>             <td>USh 5,000</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Bank Account</th>\n>                         <th>Mobile Money</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td>USh 5,000,000</td>\n>                             <td>USh 5,000,000</td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>         <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇪🇬 Egypt</td>\n>             <td>&pound; 200</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Bank Account</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td>&pound; 300,000</td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>         <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇸🇳 Senegal</td>\n>             <td>XOF 2,000</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Mobile Money</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td>XOF 1,500,000</td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>         <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇨🇮 C&ocirc;te d'Ivoire</td>\n>             <td>XOF 2,000</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Mobile Money</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td>XOF 1,500,000</td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>         <tr style=\"text-align: center; vertical-align: middle;\">\n>             <td>🇨🇲 Cameroon</td>\n>             <td>XAF 500</td>\n>             <td>\n>                 <table>\n>                     <thead>\n>                         <th>Mobile Money</th>\n>                     </thead>\n>                     <tbody>\n>                         <tr>\n>                             <td>XAF 1,000,000</td>\n>                         </tr>\n>                     </tbody>\n>                 </table>\n>             </td>\n>         </tr>\n>     </tbody>\n> </table>\n> </details>\n\n> ⚠️ Sender requirements\n>\n> Some countries might necessitate different and more comprehensive sender details.\n> <br>\n> We understand that navigating these varying rules for different countries can be complex, considering the multitude of combinations possible. To simplify this process, you can detail the requirements for each country listed below.\n> <br>\n>\n> <details>\n> <summary>🇰🇪 Kenya</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>-</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>-</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>-</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Kenya -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>-</td> <!-- Kenya -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n>\n> <details>\n> <summary>🇳🇬 Nigeria</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Nigeria -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Nigeria -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n>\n> <details>\n> <summary>🇹🇿 Tanzania</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Tanzania -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Tanzania -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n>\n> <details>\n> <summary>🇷🇼 Rwanda</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Rwanda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Rwanda -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n>\n> <details>\n> <summary>🇬🇭 Ghana</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Ghana -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Ghana -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n>\n> <details>\n> <summary>🇺🇬 Uganda</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Uganda -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Uganda -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n>\n> <details>\n> <summary>🇪🇬 Egypt</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Egypt -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Egypt -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n>\n> <details>\n> <summary>🇸🇳 Senegal</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Senegal -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Senegal -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n>\n> <details>\n> <summary>🇨🇮 C&ocirc;te d'Ivoire</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Côte d'Ivoire -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n>\n> <details>\n> <summary>🇨🇲 Cameroon</summary>\n> <table>\n>     <thead>\n>         <tr>\n>             <th>Field</th>\n>             <th>Requirements</th>\n>         </tr>\n>     </thead>\n>     <tbody>\n>         <tr>\n>             <td>sender.type</td>\n>             <td>Required</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.name</td>\n>             <td>Required</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line1</td>\n>             <td>Required</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line2</td>\n>             <td>-</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.line3</td>\n>             <td>-</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.city</td>\n>             <td>Required</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.postal_code</td>\n>             <td>Required</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.address.country</td>\n>             <td>Required</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.dob</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.type</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.country</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.number</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.issued_on</td>\n>             <td>-</td> <!-- Cameroon -->\n>         </tr>\n>         <tr>\n>             <td>sender.individual.identity_document.expires_on</td>\n>             <td>Required (with type INDIVIDUAL)</td> <!-- Cameroon -->\n>         </tr>\n>     </tbody>\n> </table>\n> <br>\n> </details>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payouts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) 🚨️ Prevent duplicate payouts! See: [x-idempotency-key security scheme](idempotency)",
+                "key": "X-Idempotency-Key",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": {\n    \"currency\": \"<ISO 4217>\",\n    \"value\": \"<string>\"\n  },\n  \"custom_id\": \"<[a-zA-Z0-9-_]{1,64}>\",\n  \"on_behalf_of\": [\n    \"<.{1,32}>\",\n    \"<.{1,32}>\"\n  ],\n  \"payment_account\": {\n    \"bank_account\": {\n      \"bank_id\": \"<ksuid>\",\n      \"number\": \"<alphanum>\"\n    },\n    \"country\": \"<iso3166 alpha-2>\",\n    \"holder\": {\n      \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n      \"type\": \"<string>\"\n    },\n    \"mobile_money\": {\n      \"number\": \"<e164>\",\n      \"operator\": \"<string>\"\n    },\n    \"type\": \"<string>\"\n  },\n  \"payment_account_id\": \"<string>\",\n  \"purpose\": \"<string>\",\n  \"sender\": {\n    \"address\": {\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"line_1\": \"<string>\",\n      \"line_2\": \"<string>\",\n      \"line_3\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    \"individual\": {\n      \"dob\": \"<yyyy-mm-dd>\",\n      \"identity_document\": {\n        \"country\": \"<ISO 3166 alpha-2>\",\n        \"expires_on\": \"<yyyy-mm-dd>\",\n        \"issued_on\": \"<yyyy-mm-dd>\",\n        \"number\": \"<string>\",\n        \"type\": \"<string>\"\n      }\n    },\n    \"name\": \"<string>\",\n    \"type\": \"<string>\"\n  },\n  \"wallet_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4b461ffd-c5c2-4727-b76c-032cd9ebae7a",
+              "name": "Accepted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) 🚨️ Prevent duplicate payouts! See: [x-idempotency-key security scheme](idempotency)",
+                    "key": "X-Idempotency-Key",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": {\n    \"currency\": \"KES\",\n    \"value\": \"2000.99\"\n  },\n  \"custom_id\": \"custom-id-xxx\",\n  \"on_behalf_of\": [\n    \"[\\\"org-xxx\\\"]\"\n  ],\n  \"payment_account\": {\n    \"bank_account\": {\n      \"bank_id\": \"bnk-xxx\",\n      \"number\": \"12345678\"\n    },\n    \"country\": \"KE\",\n    \"holder\": {\n      \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n      \"type\": \"<string>\"\n    },\n    \"mobile_money\": {\n      \"number\": \"<e164>\",\n      \"operator\": \"<string>\"\n    },\n    \"type\": \"<string>\"\n  },\n  \"payment_account_id\": \"pac-xxx\",\n  \"purpose\": \"REMITTANCE\",\n  \"sender\": {\n    \"address\": {\n      \"city\": \"Roma\",\n      \"country\": \"IT\",\n      \"line_1\": \"Piazza del Colosseo\",\n      \"line_2\": \"1\",\n      \"line_3\": \"\",\n      \"postal_code\": \"<string>\"\n    },\n    \"individual\": {\n      \"dob\": \"1970-01-01\",\n      \"identity_document\": {\n        \"country\": \"IT\",\n        \"expires_on\": \"2030-01-01\",\n        \"issued_on\": \"2020-01-01\",\n        \"number\": \"YA0000000\",\n        \"type\": \"<string>\"\n      }\n    },\n    \"name\": \"Mario Rossi\",\n    \"type\": \"<string>\"\n  },\n  \"wallet_id\": \"wlt-xxx\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"amount\": {\n      \"currency\": \"KES\",\n      \"value\": \"2000.99\"\n    },\n    \"created_at\": \"2006-01-02T15:04:05Z07:00\",\n    \"custom_id\": \"custom-id-xxx\",\n    \"id\": \"pyt-xxx\",\n    \"on_behalf_of\": [\n      \"[\\\"org-xxx\\\"]\"\n    ],\n    \"payment_account_id\": \"pac-xxx\",\n    \"purpose\": \"REMITTANCE\",\n    \"sender\": {\n      \"address\": {\n        \"city\": \"Roma\",\n        \"country\": \"IT\",\n        \"line_1\": \"Piazza del Colosseo\",\n        \"line_2\": \"1\",\n        \"line_3\": \"\",\n        \"postal_code\": \"string\"\n      },\n      \"individual\": {\n        \"dob\": \"1970-01-01\",\n        \"identity_document\": {\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"expires_on\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issued_on\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"name\": \"Mario Rossi\",\n      \"type\": \"BUSINESS\"\n    },\n    \"state\": {\n      \"code\": \"PENDING\",\n      \"context\": \"string\"\n    },\n    \"wallet_id\": \"wlt-xxx\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cbecaf40-85f6-40a8-a492-b47793eeecd0",
+              "name": "Not enough balance, see [error codes](error-codes#wallet_insufficient_balance-http-402)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) 🚨️ Prevent duplicate payouts! See: [x-idempotency-key security scheme](idempotency)",
+                    "key": "X-Idempotency-Key",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": {\n    \"currency\": \"KES\",\n    \"value\": \"2000.99\"\n  },\n  \"custom_id\": \"custom-id-xxx\",\n  \"on_behalf_of\": [\n    \"[\\\"org-xxx\\\"]\"\n  ],\n  \"payment_account\": {\n    \"bank_account\": {\n      \"bank_id\": \"bnk-xxx\",\n      \"number\": \"12345678\"\n    },\n    \"country\": \"KE\",\n    \"holder\": {\n      \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n      \"type\": \"<string>\"\n    },\n    \"mobile_money\": {\n      \"number\": \"<e164>\",\n      \"operator\": \"<string>\"\n    },\n    \"type\": \"<string>\"\n  },\n  \"payment_account_id\": \"pac-xxx\",\n  \"purpose\": \"REMITTANCE\",\n  \"sender\": {\n    \"address\": {\n      \"city\": \"Roma\",\n      \"country\": \"IT\",\n      \"line_1\": \"Piazza del Colosseo\",\n      \"line_2\": \"1\",\n      \"line_3\": \"\",\n      \"postal_code\": \"<string>\"\n    },\n    \"individual\": {\n      \"dob\": \"1970-01-01\",\n      \"identity_document\": {\n        \"country\": \"IT\",\n        \"expires_on\": \"2030-01-01\",\n        \"issued_on\": \"2020-01-01\",\n        \"number\": \"YA0000000\",\n        \"type\": \"<string>\"\n      }\n    },\n    \"name\": \"Mario Rossi\",\n    \"type\": \"<string>\"\n  },\n  \"wallet_id\": \"wlt-xxx\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"WALLET_INSUFFICIENT_BALANCE\",\n  \"message\": \"wallet '{wlt-xxx}' doesn't have enough balance\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "667cab26-64ee-4128-a513-bd322fdad3a2",
+              "name": "Idempotency conflict, see [error codes](error-codes#idempotency_race-http-409)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) 🚨️ Prevent duplicate payouts! See: [x-idempotency-key security scheme](idempotency)",
+                    "key": "X-Idempotency-Key",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": {\n    \"currency\": \"KES\",\n    \"value\": \"2000.99\"\n  },\n  \"custom_id\": \"custom-id-xxx\",\n  \"on_behalf_of\": [\n    \"[\\\"org-xxx\\\"]\"\n  ],\n  \"payment_account\": {\n    \"bank_account\": {\n      \"bank_id\": \"bnk-xxx\",\n      \"number\": \"12345678\"\n    },\n    \"country\": \"KE\",\n    \"holder\": {\n      \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n      \"type\": \"<string>\"\n    },\n    \"mobile_money\": {\n      \"number\": \"<e164>\",\n      \"operator\": \"<string>\"\n    },\n    \"type\": \"<string>\"\n  },\n  \"payment_account_id\": \"pac-xxx\",\n  \"purpose\": \"REMITTANCE\",\n  \"sender\": {\n    \"address\": {\n      \"city\": \"Roma\",\n      \"country\": \"IT\",\n      \"line_1\": \"Piazza del Colosseo\",\n      \"line_2\": \"1\",\n      \"line_3\": \"\",\n      \"postal_code\": \"<string>\"\n    },\n    \"individual\": {\n      \"dob\": \"1970-01-01\",\n      \"identity_document\": {\n        \"country\": \"IT\",\n        \"expires_on\": \"2030-01-01\",\n        \"issued_on\": \"2020-01-01\",\n        \"number\": \"YA0000000\",\n        \"type\": \"<string>\"\n      }\n    },\n    \"name\": \"Mario Rossi\",\n    \"type\": \"<string>\"\n  },\n  \"wallet_id\": \"wlt-xxx\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"IDEMPOTENCY_RACE\",\n  \"message\": \"Idempotency key already in use\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fdac15d2-38ef-4647-87e0-10d0ffd01ac6",
+              "name": "Validation failed, see [error codes](error-codes#validation_failed-http-422)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) 🚨️ Prevent duplicate payouts! See: [x-idempotency-key security scheme](idempotency)",
+                    "key": "X-Idempotency-Key",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": {\n    \"currency\": \"KES\",\n    \"value\": \"2000.99\"\n  },\n  \"custom_id\": \"custom-id-xxx\",\n  \"on_behalf_of\": [\n    \"[\\\"org-xxx\\\"]\"\n  ],\n  \"payment_account\": {\n    \"bank_account\": {\n      \"bank_id\": \"bnk-xxx\",\n      \"number\": \"12345678\"\n    },\n    \"country\": \"KE\",\n    \"holder\": {\n      \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n      \"type\": \"<string>\"\n    },\n    \"mobile_money\": {\n      \"number\": \"<e164>\",\n      \"operator\": \"<string>\"\n    },\n    \"type\": \"<string>\"\n  },\n  \"payment_account_id\": \"pac-xxx\",\n  \"purpose\": \"REMITTANCE\",\n  \"sender\": {\n    \"address\": {\n      \"city\": \"Roma\",\n      \"country\": \"IT\",\n      \"line_1\": \"Piazza del Colosseo\",\n      \"line_2\": \"1\",\n      \"line_3\": \"\",\n      \"postal_code\": \"<string>\"\n    },\n    \"individual\": {\n      \"dob\": \"1970-01-01\",\n      \"identity_document\": {\n        \"country\": \"IT\",\n        \"expires_on\": \"2030-01-01\",\n        \"issued_on\": \"2020-01-01\",\n        \"number\": \"YA0000000\",\n        \"type\": \"<string>\"\n      }\n    },\n    \"name\": \"Mario Rossi\",\n    \"type\": \"<string>\"\n  },\n  \"wallet_id\": \"wlt-xxx\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"errors\": {\n    \"fields\": {\n      \"key_0\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  },\n  \"message\": \"Validation failed.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "34541f8b-f8c1-42fc-928b-b223f426b243",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) 🚨️ Prevent duplicate payouts! See: [x-idempotency-key security scheme](idempotency)",
+                    "key": "X-Idempotency-Key",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": {\n    \"currency\": \"KES\",\n    \"value\": \"2000.99\"\n  },\n  \"custom_id\": \"custom-id-xxx\",\n  \"on_behalf_of\": [\n    \"[\\\"org-xxx\\\"]\"\n  ],\n  \"payment_account\": {\n    \"bank_account\": {\n      \"bank_id\": \"bnk-xxx\",\n      \"number\": \"12345678\"\n    },\n    \"country\": \"KE\",\n    \"holder\": {\n      \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n      \"type\": \"<string>\"\n    },\n    \"mobile_money\": {\n      \"number\": \"<e164>\",\n      \"operator\": \"<string>\"\n    },\n    \"type\": \"<string>\"\n  },\n  \"payment_account_id\": \"pac-xxx\",\n  \"purpose\": \"REMITTANCE\",\n  \"sender\": {\n    \"address\": {\n      \"city\": \"Roma\",\n      \"country\": \"IT\",\n      \"line_1\": \"Piazza del Colosseo\",\n      \"line_2\": \"1\",\n      \"line_3\": \"\",\n      \"postal_code\": \"<string>\"\n    },\n    \"individual\": {\n      \"dob\": \"1970-01-01\",\n      \"identity_document\": {\n        \"country\": \"IT\",\n        \"expires_on\": \"2030-01-01\",\n        \"issued_on\": \"2020-01-01\",\n        \"number\": \"YA0000000\",\n        \"type\": \"<string>\"\n      }\n    },\n    \"name\": \"Mario Rossi\",\n    \"type\": \"<string>\"\n  },\n  \"wallet_id\": \"wlt-xxx\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"An internal error has occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ab6d252f-ce4b-464e-97ac-94af2a93c161",
+              "name": "Receiving bank/operation temporarily unavailable see [error codes](error-codes)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) 🚨️ Prevent duplicate payouts! See: [x-idempotency-key security scheme](idempotency)",
+                    "key": "X-Idempotency-Key",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": {\n    \"currency\": \"KES\",\n    \"value\": \"2000.99\"\n  },\n  \"custom_id\": \"custom-id-xxx\",\n  \"on_behalf_of\": [\n    \"[\\\"org-xxx\\\"]\"\n  ],\n  \"payment_account\": {\n    \"bank_account\": {\n      \"bank_id\": \"bnk-xxx\",\n      \"number\": \"12345678\"\n    },\n    \"country\": \"KE\",\n    \"holder\": {\n      \"name\": \"<^(?:[\\\\p{L}'\\\\-]+\\\\s*)+$>\",\n      \"type\": \"<string>\"\n    },\n    \"mobile_money\": {\n      \"number\": \"<e164>\",\n      \"operator\": \"<string>\"\n    },\n    \"type\": \"<string>\"\n  },\n  \"payment_account_id\": \"pac-xxx\",\n  \"purpose\": \"REMITTANCE\",\n  \"sender\": {\n    \"address\": {\n      \"city\": \"Roma\",\n      \"country\": \"IT\",\n      \"line_1\": \"Piazza del Colosseo\",\n      \"line_2\": \"1\",\n      \"line_3\": \"\",\n      \"postal_code\": \"<string>\"\n    },\n    \"individual\": {\n      \"dob\": \"1970-01-01\",\n      \"identity_document\": {\n        \"country\": \"IT\",\n        \"expires_on\": \"2030-01-01\",\n        \"issued_on\": \"2020-01-01\",\n        \"number\": \"YA0000000\",\n        \"type\": \"<string>\"\n      }\n    },\n    \"name\": \"Mario Rossi\",\n    \"type\": \"<string>\"\n  },\n  \"wallet_id\": \"wlt-xxx\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"PAYOUT_BANK_TEMPORARILY_UNAVAILABLE\",\n  \"message\": \"Payout to this bank is not available.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fa9cf1b6-395d-4a54-9dfe-f510f4c4a0bf",
+          "name": "Get",
+          "request": {
+            "name": "Get",
+            "description": {
+              "content": "This endpoint enables the retrieval of a previously accepted payout using its unique ID (`pyt-xxx`) or the `custom_id` submitted when creating it. Its primary purpose is to periodically check for changes in the payout status.\n\nTo learn more about the lifecycle of payouts, please refer to the dedicated section under the [Send Money](post_payouts) endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payouts",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The Payout ID (pyt-xxx) or the custom_id provided at the time of payout creation"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9d0a1884-4e35-4eec-abdf-e4541449642c",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The Payout ID (pyt-xxx) or the custom_id provided at the time of payout creation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"amount\": {\n      \"currency\": \"KES\",\n      \"value\": \"2000.99\"\n    },\n    \"created_at\": \"2006-01-02T15:04:05Z07:00\",\n    \"custom_id\": \"custom-id-xxx\",\n    \"id\": \"pyt-xxx\",\n    \"on_behalf_of\": [\n      \"[\\\"org-xxx\\\"]\"\n    ],\n    \"payment_account_id\": \"pac-xxx\",\n    \"purpose\": \"REMITTANCE\",\n    \"receipt\": \"ref-xxx (format changes depending on the telco/bank)\",\n    \"sender\": {\n      \"address\": {\n        \"city\": \"Roma\",\n        \"country\": \"IT\",\n        \"line_1\": \"Piazza del Colosseo\",\n        \"line_2\": \"1\",\n        \"line_3\": \"\",\n        \"postal_code\": \"string\"\n      },\n      \"individual\": {\n        \"dob\": \"1970-01-01\",\n        \"identity_document\": {\n          \"country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"expires_on\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"issued_on\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"number\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"name\": \"Mario Rossi\",\n      \"type\": \"INDIVIDUAL\"\n    },\n    \"state\": {\n      \"code\": \"PENDING\",\n      \"context\": \"string\"\n    },\n    \"wallet_id\": \"wlt-xxx\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "637f34b6-8fbd-4967-911c-c38cf9a901dd",
+              "name": "Couldn't find any payout with the provided ID",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The Payout ID (pyt-xxx) or the custom_id provided at the time of payout creation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The resource you are looking for cannot be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd9bfe71-ecd6-4d78-8958-d467bb25f320",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The Payout ID (pyt-xxx) or the custom_id provided at the time of payout creation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"An internal error has occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://rest.sandbox.rafiki-api.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "025f14d2-47de-49d2-b0de-dcc300d88426",
+    "name": "Resources Bank Payout API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "",
+      "type": "text/plain"
+    }
+  }
+}

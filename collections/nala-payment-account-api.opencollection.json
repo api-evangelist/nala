@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Resources Bank Payment Account API",
+    "version": "1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payment Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://rest.sandbox.rafiki-api.com/v1/payment-accounts",
+            "params": [
+              {
+                "name": "paging_limit",
+                "value": "",
+                "type": "query",
+                "description": "The count of items returned as part of the pagination cursor iteration, minimum value is 1 and maximum 50"
+              },
+              {
+                "name": "paging_after",
+                "value": "",
+                "type": "query",
+                "description": "The base64 URL encoded cursor used to access the next set of paginated results"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Using this endpoint, you can list all your payment accounts ordered by their creation date in descending order. Considering that the returned data may contain thousands of records, the results will be paginated with a cursor [(see pagination docs)](pagination), allowing you to scroll through the data using multiple requests as necessary.\n"
+        },
+        {
+          "info": {
+            "name": "Get or create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://rest.sandbox.rafiki-api.com/v1/payment-accounts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "A payment account is a uniquely identifiable entity that serves the purpose of a recipient to send money to (e.g. a remittance recipient).\n\nThis endpoint allows you to create payment accounts of both **Mobile Money** and **Bank Account** types, which can subsequently serve as recipient accounts for making [payouts](post_payouts).\n\n> 💁\n>\n> Although HTTP POST is not inherently idempotent, with this endpoint, you can confidently retry the same request without inadvertently creating duplicate recor"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

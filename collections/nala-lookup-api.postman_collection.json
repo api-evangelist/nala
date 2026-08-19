@@ -1,0 +1,371 @@
+{
+  "item": [
+    {
+      "id": "4492f0dd-3db7-4c8a-998a-3cf220d98f9b",
+      "name": "Lookup",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "28067d7b-88dd-43b0-ac72-978541e324dc",
+          "name": "Get",
+          "request": {
+            "name": "Get",
+            "description": {
+              "content": "The lookup resource facilitates the retrieval of metadata associated with mobile money or bank accounts. For instance, prior to creating payment accounts, you can utilize this endpoint to validate whether an account number corresponds to a specific business or individual.\n\nThis functionality proves especially valuable in ensuring that only validated payment accounts are utilized; for example, when integrated with other processes, such as payouts, it helps mitigate the risk of costly reversals or refunds resulting from funds being sent to an incorrect recipient.\n\n### Account not found\n\nWhile we strive to ensure that our lookup sources are always up to date with the most recent data, we must consider instances when we cannot retrieve metadata for a requested payment account.\n\nIn such cases, our API will respond with the error code [LOOKUP_ACCOUNT_NOT_FOUND](error-codes#lookup_account_not_found-http-404), providing a way to programmatically determine whether the account lookup was unsuccessful.\n\nFor some cases like Kenya mobile money lookups, try again in 5 minutes after getting the `LOOKUP_ACCOUNT_NOT_FOUND` error. If we respond with the same error again, it is likely that the account is not registered with the operator.\n\n### Supported countries/account types\n\n| Country       | Mobile Money | Bank Account |\n|:--------------|:------------:|:------------:|\n| 🇳🇬 Nigeria  |     ❌       |      ✅      |\n| 🇺🇬 Uganda   |     ✅       |      ✅      |\n| 🇬🇭 Ghana    |     ✅       |      ✅      |\n| 🇰🇪 Kenya    |     ✅       |      ✅      |\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "lookups",
+                ":accountNumber"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "payment_account_type",
+                  "value": "<string>",
+                  "description": "(Required) The payment account type to lookup for"
+                },
+                {
+                  "disabled": false,
+                  "key": "bank_id",
+                  "value": "<string>",
+                  "description": "If payment_account_type is BANK_ACCOUNT, this will be a mandatory field representing the bank id (bnk-xxx) used to identify which bank the account number belongs to"
+                },
+                {
+                  "disabled": false,
+                  "key": "operator",
+                  "value": "<string>",
+                  "description": "If payment_account_type is MOBILE_MONEY, this will be a mandatory field representing the mobile money operator"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "accountNumber",
+                  "description": "(Required) The account number, that is either the mobile money number or bank account number"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6e017f67-a9fe-457a-93dd-efa3c2daa0db",
+              "name": "The found looked up account number information",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "lookups",
+                    ":accountNumber"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payment_account_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bank_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "operator",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "accountNumber",
+                      "description": "(Required) The account number, that is either the mobile money number or bank account number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"holder\": {\n      \"name\": \"Mario Rossi\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "812958c0-0466-4462-8241-f672530593f6",
+              "name": "The provided account identifier is unregistered / couldn't be found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "lookups",
+                    ":accountNumber"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payment_account_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bank_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "operator",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "accountNumber",
+                      "description": "(Required) The account number, that is either the mobile money number or bank account number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"LOOKUP_ACCOUNT_NOT_FOUND\",\n  \"message\": \"the provided account identifier {'xxxxxxxxx'} couldn't be looked up\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b4f1fdef-f303-4fd6-b127-6eb7b7ccb51a",
+              "name": "Validation failed, e.g. missing payment_account_type",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "lookups",
+                    ":accountNumber"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payment_account_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bank_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "operator",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "accountNumber",
+                      "description": "(Required) The account number, that is either the mobile money number or bank account number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"errors\": {\n    \"fields\": {\n      \"key_0\": [\n        \"string\",\n        \"string\"\n      ],\n      \"key_1\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  },\n  \"message\": \"Validation failed.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7f06c78c-1856-42b8-a0c1-d80cc7435627",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "lookups",
+                    ":accountNumber"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payment_account_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bank_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "operator",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "accountNumber",
+                      "description": "(Required) The account number, that is either the mobile money number or bank account number"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"An internal error has occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://rest.sandbox.rafiki-api.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "453703b3-b218-4bd7-826b-dd1503fa7de7",
+    "name": "Resources Bank Lookup API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "",
+      "type": "text/plain"
+    }
+  }
+}
