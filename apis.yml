@@ -120,6 +120,8 @@ apis:
   humanURL: https://docs.rafiki.com/
   baseURL: https://rest.prod.rafiki-api.com/v1
   tags:
+  - Wallets
+  tags_raw:
   - Wallet
   properties:
   - type: OpenAPI
