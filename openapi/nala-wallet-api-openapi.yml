@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   contact: {}
-  title: Resources Bank Wallet API
+  title: Resources Wallet API
   version: '1'
 servers:
 - url: https://rest.sandbox.rafiki-api.com/v1
@@ -32,6 +32,8 @@ paths:
       summary: List
       tags:
       - Wallet
+      operationId: getWallets
+      x-operation-id-source: derived
 components:
   schemas:
     _wallets_get_200_response_allOf_data_inner:
@@ -54,15 +56,6 @@ components:
           format: ksuid
           type: string
       type: object
-    _wallets_get_200_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollectionNoMeta'
-      - properties:
-          data:
-            items:
-              $ref: '#/components/schemas/_wallets_get_200_response_allOf_data_inner'
-            type: array
-        type: object
     openapi.ResponseBodyInternalServerError:
       properties:
         code:
@@ -80,6 +73,15 @@ components:
           items: {}
           type: array
       type: object
+    _wallets_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollectionNoMeta'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/_wallets_get_200_response_allOf_data_inner'
+            type: array
+        type: object
   securitySchemes:
     Bearer:
       in: header

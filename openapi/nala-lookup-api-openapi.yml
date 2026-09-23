@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
   contact: {}
-  title: Resources Bank Lookup API
+  title: Resources Lookup API
   version: '1'
 servers:
 - url: https://rest.sandbox.rafiki-api.com/v1
@@ -22,7 +22,7 @@ paths:
         While we strive to ensure that our lookup sources are always up to date with the most recent data, we must consider instances when we cannot retrieve metadata for a requested payment account.
 
 
-        In such cases, our API will respond with the error code [LOOKUP_ACCOUNT_NOT_FOUND](error-codes#lookup_account_not_found-http-404), providing a way to programmatically determine whether the account lookup was unsuccessful.
+        In such cases, our API will respond with the error code LOOKUP_ACCOUNT_NOT_FOUND, providing a way to programmatically determine whether the account lookup was unsuccessful.
 
 
         For some cases like Kenya mobile money lookups, try again in 5 minutes after getting the `LOOKUP_ACCOUNT_NOT_FOUND` error. If we respond with the same error again, it is likely that the account is not registered with the operator.
@@ -31,19 +31,17 @@ paths:
         ### Supported countries/account types
 
 
-        | Country       | Mobile Money | Bank Account |
+        | Country | Mobile Money | Bank Account |
 
         |:--------------|:------------:|:------------:|
 
-        | 🇳🇬 Nigeria  |     ❌       |      ✅      |
+        | 🇳🇬 Nigeria | ❌ | ✅ |
 
-        | 🇺🇬 Uganda   |     ✅       |      ✅      |
+        | 🇺🇬 Uganda | ✅ | ✅ |
 
-        | 🇬🇭 Ghana    |     ✅       |      ✅      |
+        | 🇬🇭 Ghana | ✅ | ✅ |
 
-        | 🇰🇪 Kenya    |     ✅       |      ✅      |
-
-        '
+        | 🇰🇪 Kenya | ✅ | ✅ |'
       parameters:
       - description: The payment account type to lookup for
         explode: true
@@ -116,15 +114,10 @@ paths:
       summary: Get
       tags:
       - Lookup
+      operationId: getLookupsByAccountNumber
+      x-operation-id-source: derived
 components:
   schemas:
-    _lookups__accountNumber__get_200_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
-      - properties:
-          data:
-            $ref: '#/components/schemas/openapi.LookupGetResponse'
-        type: object
     openapi.ResponseBodyValidationFailed:
       properties:
         code:
@@ -138,19 +131,6 @@ components:
           example: Validation failed.
           type: string
       type: object
-    openapi.LookupGetResponse:
-      properties:
-        holder:
-          $ref: '#/components/schemas/openapi_LookupGetResponse_holder'
-      type: object
-    openapi_LookupGetResponse_holder:
-      properties:
-        name:
-          description: The payment account owner's registered full name at the banking entity
-          example: Mario Rossi
-          type: string
-      type: object
-      x-order: '1'
     openapi.ResponseBodyInternalServerError:
       properties:
         code:
@@ -162,16 +142,21 @@ components:
           example: An internal error has occurred.
           type: string
       type: object
-    openapi.ResponseBodyLookupAccountNotFound:
+    _lookups__accountNumber__get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.LookupGetResponse'
+        type: object
+    openapi.ResponseBodySuccessNoMeta:
       properties:
-        code:
-          description: '`LOOKUP_ACCOUNT_NOT_FOUND`'
-          example: LOOKUP_ACCOUNT_NOT_FOUND
-          type: string
-        message:
-          description: E.g. "Invalid bank account number, or, syntactically valid, but not registered with any banking entity"
-          example: the provided account identifier {'xxxxxxxxx'} couldn't be looked up
-          type: string
+        data: {}
+      type: object
+    openapi.LookupGetResponse:
+      properties:
+        holder:
+          $ref: '#/components/schemas/openapi_LookupGetResponse_holder'
       type: object
     openapi_ResponseBodyValidationFailed_errors:
       properties:
@@ -183,9 +168,24 @@ components:
           description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
           type: object
       type: object
-    openapi.ResponseBodySuccessNoMeta:
+    openapi_LookupGetResponse_holder:
       properties:
-        data: {}
+        name:
+          description: The payment account owner's registered full name at the banking entity
+          example: Mario Rossi
+          type: string
+      type: object
+      x-order: '1'
+    openapi.ResponseBodyLookupAccountNotFound:
+      properties:
+        code:
+          description: '`LOOKUP_ACCOUNT_NOT_FOUND`'
+          example: LOOKUP_ACCOUNT_NOT_FOUND
+          type: string
+        message:
+          description: E.g. "Invalid bank account number, or, syntactically valid, but not registered with any banking entity"
+          example: the provided account identifier {'xxxxxxxxx'} couldn't be looked up
+          type: string
       type: object
   securitySchemes:
     Bearer:

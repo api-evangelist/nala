@@ -1,11 +1,7 @@
 {
   "provider": "nala",
   "sources": [
-    "nala-bank-api-openapi.yml",
-    "nala-lookup-api-openapi.yml",
-    "nala-payment-account-api-openapi.yml",
-    "nala-payout-api-openapi.yml",
-    "nala-wallet-api-openapi.yml"
+    "_original/nala-rafiki-openapi.yml"
   ],
   "outputs": [
     "nala-bank-api-openapi.yml",
@@ -17,6 +13,21 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "nala-rafiki-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "nala-rafiki-openapi.yml: declared missing tag: Bank",
+    "nala-rafiki-openapi.yml: declared missing tag: Lookup",
+    "nala-rafiki-openapi.yml: declared missing tag: Payment Account",
+    "nala-rafiki-openapi.yml: declared missing tag: Payout",
+    "nala-rafiki-openapi.yml: declared missing tag: Wallet",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "nala-bank-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nala-lookup-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nala-payment-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nala-payout-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "nala-wallet-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
