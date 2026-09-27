@@ -36,6 +36,12 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    openapi.ResponseBodySuccessCollectionNoMeta:
+      properties:
+        data:
+          items: {}
+          type: array
+      type: object
     _banks_get_200_response:
       allOf:
       - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollectionNoMeta'
@@ -69,12 +75,6 @@ components:
           description: E.g. "An internal error has occurred."
           example: An internal error has occurred.
           type: string
-      type: object
-    openapi.ResponseBodySuccessCollectionNoMeta:
-      properties:
-        data:
-          items: {}
-          type: array
       type: object
   securitySchemes:
     Bearer:

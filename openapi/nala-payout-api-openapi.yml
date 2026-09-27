@@ -175,6 +175,128 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    openapi.ResponseBodyIdempotencyConflict:
+      properties:
+        code:
+          description: Can be either `IDEMPOTENCY_RACE` or `IDEMPOTENCY_KEY_ALREADY_USED`
+          example: IDEMPOTENCY_RACE
+          type: string
+        message:
+          description: E.g. "Idempotency key already in use"
+          example: Idempotency key already in use
+          type: string
+      type: object
+    openapi_PayoutCreateResponse_state:
+      properties:
+        code:
+          description: The state code signifies the overall status of a payout. For detailed information about the meaning of each state, please consult the lifecycle section above.
+          enum:
+          - PENDING
+          - REVERSED
+          - SENT
+          - CANCELLED
+          - FAILED
+          example: PENDING
+          type: string
+        context:
+          description: Together with the "code" property, the "context" property offers additional context and information, whenever possible, about the specific state. For instance, if a payout fails, there are numerous reasons why this might occur. The "context" property will provide more detailed information in such cases.
+          type: string
+      type: object
+    openapi_PayoutCreateRequest_amount:
+      description: '<span style="color:#e95f6a;">required</span>
+
+
+        The intended amount to send to either the payment_account_id or payment_account'
+      properties:
+        currency:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            The currency associated with the amount value, formatted according to ISO 4217'
+          example: KES
+          format: ISO 4217
+          type: string
+        value:
+          description: <span style="color:#e95f6a;">required</span>
+          example: '2000.99'
+          type: string
+      type: object
+    openapi_PayoutCreateResponse_amount:
+      properties:
+        currency:
+          description: The currency associated with the amount value, formatted according to ISO 4217
+          example: KES
+          format: ISO 4217
+          type: string
+        value:
+          example: '2000.99'
+          type: string
+      type: object
+    openapi.ResponseBodyValidationFailed:
+      properties:
+        code:
+          description: '`VALIDATION_FAILED`'
+          example: VALIDATION_FAILED
+          type: string
+        errors:
+          $ref: '#/components/schemas/openapi_ResponseBodyValidationFailed_errors'
+        message:
+          description: E.g. "Validation failed."
+          example: Validation failed.
+          type: string
+      type: object
+    openapi.PayoutCreateResponse:
+      properties:
+        amount:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_amount'
+        created_at:
+          example: 2006-01-02T15:04:05Z07:00
+          format: RFC 3339
+          type: string
+        custom_id:
+          example: custom-id-xxx
+          format: '[a-zA-Z0-9-_]{1,64}'
+          type: string
+        id:
+          description: The payout unique identifier
+          example: pyt-xxx
+          type: string
+        on_behalf_of:
+          example:
+          - '["org-xxx"]'
+          items:
+            type: string
+          type: array
+        payment_account_id:
+          description: The recipient payment account receiving funds
+          example: pac-xxx
+          type: string
+        purpose:
+          enum:
+          - GOODS_PURCHASE
+          - SERVICES_PAYMENT
+          - INVOICE_PAYMENT
+          - LOAN_REPAYMENT
+          - BILLS_PAYMENT
+          - SALARY_AND_WAGES
+          - P2P_TRANSFER
+          - REMITTANCE
+          - DONATION
+          - GRANTS_AND_SCHOLARSHIPS
+          - TRAVEL_AND_ACCOMMODATION
+          - TAX_PAYMENT
+          - INSURANCE_PREMIUM
+          example: REMITTANCE
+          type: string
+        sender:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_sender'
+        state:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_state'
+        wallet_id:
+          description: The wallet ID from which the money will disburse
+          example: wlt-xxx
+          type: string
+      type: object
     openapi_PayoutCreateResponse_sender:
       properties:
         address:
@@ -191,85 +313,15 @@ components:
           - BUSINESS
           type: string
       type: object
-    openapi_PayoutCreateRequest_sender_individual_identity_document:
+    openapi_PayoutCreateResponse_sender_individual:
       properties:
-        country:
-          description: '<span style="color:#e95f6a;">required if identity_document is provided</span>
-
-
-            The ISO 3166 alpha-2 country code indicating the issuing country of the document.'
-          example: IT
-          format: ISO 3166 alpha-2
-          type: string
-        expires_on:
-          description: '<span style="color:#e95f6a;">required if identity_document is provided</span>
-
-
-            Date formatted as yyyy-mm-dd'
-          example: 2030-01-01
+        dob:
+          description: Date of birth formatted as yyyy-mm-dd
+          example: 1970-01-01
           format: yyyy-mm-dd
           type: string
-        issued_on:
-          description: Date formatted as yyyy-mm-dd
-          example: 2020-01-01
-          format: yyyy-mm-dd
-          type: string
-        number:
-          description: <span style="color:#e95f6a;">required if identity_document is provided</span>
-          example: YA0000000
-          type: string
-        type:
-          description: '<span style="color:#e95f6a;">required if identity_document is provided</span>
-
-
-            One of `PASSPORT`, `DRIVING_LICENCE`, `NATIONAL_ID_CARD`, `RESIDENCE_PERMIT`'
-          enum:
-          - PASSPORT
-          - DRIVING_LICENCE
-          - NATIONAL_ID_CARD
-          - RESIDENCE_PERMIT
-          type: string
-      type: object
-    openapi_PayoutCreateResponse_sender_address:
-      properties:
-        city:
-          example: Roma
-          type: string
-        country:
-          description: The ISO 3166 alpha-2 country code associated with the address.
-          example: IT
-          format: ISO 3166 alpha-2
-          type: string
-        line_1:
-          example: Piazza del Colosseo
-          type: string
-        line_2:
-          example: '1'
-          type: string
-        line_3:
-          example: ''
-          type: string
-          x-omitempty: true
-        postal_code:
-          example: 00184
-          type: string
-      type: object
-    openapi_PayoutListResponseMeta_paging_cursors:
-      properties:
-        after:
-          example: dHJ4LTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw==
-          type: string
-      type: object
-    openapi.ResponseBodyWalletInsufficientBalance:
-      properties:
-        code:
-          description: '`WALLET_INSUFFICIENT_BALANCE`'
-          example: WALLET_INSUFFICIENT_BALANCE
-          type: string
-        message:
-          description: E.g. "Wallet '{wlt-xxx}' doesn't have enough balance"
-          example: wallet '{wlt-xxx}' doesn't have enough balance
-          type: string
+        identity_document:
+          $ref: '#/components/schemas/openapi_PayoutCreateResponse_sender_individual_identity_document'
       type: object
     openapi.ResponseBodyPayoutPaymentAccountTemporarilyUnavailable:
       properties:
@@ -282,17 +334,61 @@ components:
           example: Payout to this bank is not available.
           type: string
       type: object
-    _payouts_get_200_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollection'
-      - properties:
-          data:
-            items:
-              $ref: '#/components/schemas/openapi.PayoutGetResponse'
-            type: array
-          meta:
-            $ref: '#/components/schemas/openapi.PayoutListResponseMeta'
-        type: object
+    openapi.PayoutListResponseMeta:
+      properties:
+        paging:
+          $ref: '#/components/schemas/openapi_PayoutListResponseMeta_paging'
+      type: object
+    openapi.ResponseBodyInternalServerError:
+      properties:
+        code:
+          description: '`INTERNAL_SERVER_ERROR`'
+          example: INTERNAL_SERVER_ERROR
+          type: string
+        message:
+          description: E.g. "An internal error has occurred."
+          example: An internal error has occurred.
+          type: string
+      type: object
+    openapi.PaymentAccountGetOrCreateRequest:
+      properties:
+        bank_account:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_bank_account'
+        country:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            The ISO 3166 alpha-2 country code in which the payment account is registered.'
+          example: KE
+          format: iso3166 alpha-2
+          type: string
+          x-order: '2'
+        holder:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_holder'
+        mobile_money:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_mobile_money'
+        type:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            Either `MOBILE_MONEY` or `BANK_ACCOUNT`'
+          enum:
+          - MOBILE_MONEY
+          - BANK_ACCOUNT
+          type: string
+          x-order: '1'
+      type: object
+    openapi.ResponseBodyNotFound:
+      properties:
+        code:
+          description: '`NOT_FOUND`'
+          example: NOT_FOUND
+          type: string
+        message:
+          description: E.g. "The resource you are looking for cannot be found."
+          example: The resource you are looking for cannot be found.
+          type: string
+      type: object
     openapi.PayoutGetResponse:
       properties:
         amount:
@@ -354,178 +450,6 @@ components:
           example: wlt-xxx
           type: string
       type: object
-    openapi_PayoutCreateRequest_sender:
-      description: An optional property for incorporating sender details. Please refer to the "💡 **Compliance requirements**" documentation above.
-      properties:
-        address:
-          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender_address'
-        individual:
-          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender_individual'
-        name:
-          description: '<span style="color:#e95f6a;">required if sender is provided</span>
-
-
-            The individual full name or registered business legal name'
-          example: Mario Rossi
-          type: string
-        type:
-          description: '<span style="color:#e95f6a;">required if sender is provided</span>
-
-
-            Either `INDIVIDUAL` or `BUSINESS`'
-          enum:
-          - INDIVIDUAL
-          - BUSINESS
-          type: string
-      type: object
-    openapi.ResponseBodyInternalServerError:
-      properties:
-        code:
-          description: '`INTERNAL_SERVER_ERROR`'
-          example: INTERNAL_SERVER_ERROR
-          type: string
-        message:
-          description: E.g. "An internal error has occurred."
-          example: An internal error has occurred.
-          type: string
-      type: object
-    openapi_ResponseBodyValidationFailed_errors:
-      properties:
-        fields:
-          additionalProperties:
-            items:
-              type: string
-            type: array
-          description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
-          type: object
-      type: object
-    _payouts_post_202_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
-      - properties:
-          data:
-            $ref: '#/components/schemas/openapi.PayoutCreateResponse'
-        type: object
-    openapi.PayoutCreateResponse:
-      properties:
-        amount:
-          $ref: '#/components/schemas/openapi_PayoutCreateResponse_amount'
-        created_at:
-          example: 2006-01-02T15:04:05Z07:00
-          format: RFC 3339
-          type: string
-        custom_id:
-          example: custom-id-xxx
-          format: '[a-zA-Z0-9-_]{1,64}'
-          type: string
-        id:
-          description: The payout unique identifier
-          example: pyt-xxx
-          type: string
-        on_behalf_of:
-          example:
-          - '["org-xxx"]'
-          items:
-            type: string
-          type: array
-        payment_account_id:
-          description: The recipient payment account receiving funds
-          example: pac-xxx
-          type: string
-        purpose:
-          enum:
-          - GOODS_PURCHASE
-          - SERVICES_PAYMENT
-          - INVOICE_PAYMENT
-          - LOAN_REPAYMENT
-          - BILLS_PAYMENT
-          - SALARY_AND_WAGES
-          - P2P_TRANSFER
-          - REMITTANCE
-          - DONATION
-          - GRANTS_AND_SCHOLARSHIPS
-          - TRAVEL_AND_ACCOMMODATION
-          - TAX_PAYMENT
-          - INSURANCE_PREMIUM
-          example: REMITTANCE
-          type: string
-        sender:
-          $ref: '#/components/schemas/openapi_PayoutCreateResponse_sender'
-        state:
-          $ref: '#/components/schemas/openapi_PayoutCreateResponse_state'
-        wallet_id:
-          description: The wallet ID from which the money will disburse
-          example: wlt-xxx
-          type: string
-      type: object
-    openapi.PayoutListResponseMeta:
-      properties:
-        paging:
-          $ref: '#/components/schemas/openapi_PayoutListResponseMeta_paging'
-      type: object
-    openapi_PayoutCreateResponse_amount:
-      properties:
-        currency:
-          description: The currency associated with the amount value, formatted according to ISO 4217
-          example: KES
-          format: ISO 4217
-          type: string
-        value:
-          example: '2000.99'
-          type: string
-      type: object
-    openapi_PayoutCreateRequest_sender_address:
-      properties:
-        city:
-          description: <span style="color:#e95f6a;">required if address is provided</span>
-          example: Roma
-          type: string
-        country:
-          description: '<span style="color:#e95f6a;">required if address is provided</span>
-
-
-            The ISO 3166 alpha-2 country code associated with the address.'
-          example: IT
-          type: string
-        line_1:
-          description: <span style="color:#e95f6a;">required if address is provided</span>
-          example: Piazza del Colosseo
-          type: string
-        line_2:
-          example: '1'
-          type: string
-        line_3:
-          example: ''
-          type: string
-          x-omitempty: true
-        postal_code:
-          description: '<span style="color:#e95f6a;">required if address is provided</span>
-
-
-            ⚠️ We enforce postal code validation for these following country codes : GB, US, PT, IE, MT, NG, NL, SK'
-          example: 00184
-          type: string
-      type: object
-    openapi_PaymentAccountGetOrCreateRequest_bank_account:
-      properties:
-        bank_id:
-          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
-
-
-            The bank identifier representing the bank associated with the payment account'
-          example: bnk-xxx
-          format: ksuid
-          type: string
-        number:
-          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
-
-
-            The actual bank account number (alphanum).'
-          example: '12345678'
-          format: alphanum
-          type: string
-      type: object
-      x-order: '4'
     openapi_PaymentAccountGetOrCreateRequest_mobile_money:
       properties:
         number:
@@ -557,72 +481,26 @@ components:
           type: string
       type: object
       x-order: '4'
-    openapi_PaymentAccountGetOrCreateRequest_holder:
-      description: '<span style="color:#e95f6a;">required</span>
-
-
-        The individual (or business) in whose name the bank account is registered'
+    openapi_PaymentAccountGetOrCreateRequest_bank_account:
       properties:
-        name:
-          description: '<span style="color:#e95f6a;">required</span>
+        bank_id:
+          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
 
 
-            Either the INDIVIDUAL full name or the BUSINESS registered legal name'
-          format: ^(?:[\p{L}'\-]+\s*)+$
-          type: string
-        type:
-          description: '<span style="color:#e95f6a;">required</span>
-
-
-            The holder legal entity type, whether an INDIVIDUAL person or a BUSINESS'
-          enum:
-          - INDIVIDUAL
-          - BUSINESS
-          type: string
-      type: object
-      x-order: '3'
-    openapi_PayoutCreateRequest_sender_individual:
-      properties:
-        dob:
-          description: Date of birth formatted as yyyy-mm-dd
-          example: 1970-01-01
-          format: yyyy-mm-dd
-          type: string
-        identity_document:
-          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender_individual_identity_document'
-      type: object
-    openapi_PayoutCreateResponse_sender_individual_identity_document:
-      properties:
-        country:
-          description: The ISO 3166 alpha-2 country code indicating the issuing country of the document.
-          example: IT
-          format: ISO 3166 alpha-2
-          type: string
-        expires_on:
-          description: Date formatted as yyyy-mm-dd
-          example: 2030-01-01
-          format: yyyy-mm-dd
-          type: string
-        issued_on:
-          description: Date formatted as yyyy-mm-dd
-          example: 2020-01-01
-          format: yyyy-mm-dd
+            The bank identifier representing the bank associated with the payment account'
+          example: bnk-xxx
+          format: ksuid
           type: string
         number:
-          example: YA0000000
-          type: string
-        type:
-          enum:
-          - PASSPORT
-          - DRIVING_LICENCE
-          - NATIONAL_ID_CARD
-          - RESIDENCE_PERMIT
+          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
+
+
+            The actual bank account number (alphanum).'
+          example: '12345678'
+          format: alphanum
           type: string
       type: object
-    openapi.ResponseBodySuccessNoMeta:
-      properties:
-        data: {}
-      type: object
+      x-order: '4'
     openapi.ResponseBodySuccessCollection:
       properties:
         data:
@@ -630,128 +508,27 @@ components:
           type: array
         meta: {}
       type: object
-    openapi.ResponseBodyValidationFailed:
-      properties:
-        code:
-          description: '`VALIDATION_FAILED`'
-          example: VALIDATION_FAILED
-          type: string
-        errors:
-          $ref: '#/components/schemas/openapi_ResponseBodyValidationFailed_errors'
-        message:
-          description: E.g. "Validation failed."
-          example: Validation failed.
-          type: string
-      type: object
-    openapi.ResponseBodyIdempotencyConflict:
-      properties:
-        code:
-          description: Can be either `IDEMPOTENCY_RACE` or `IDEMPOTENCY_KEY_ALREADY_USED`
-          example: IDEMPOTENCY_RACE
-          type: string
-        message:
-          description: E.g. "Idempotency key already in use"
-          example: Idempotency key already in use
-          type: string
-      type: object
-    openapi_PayoutCreateRequest_amount:
-      description: '<span style="color:#e95f6a;">required</span>
-
-
-        The intended amount to send to either the payment_account_id or payment_account'
-      properties:
-        currency:
-          description: '<span style="color:#e95f6a;">required</span>
-
-
-            The currency associated with the amount value, formatted according to ISO 4217'
-          example: KES
-          format: ISO 4217
-          type: string
-        value:
-          description: <span style="color:#e95f6a;">required</span>
-          example: '2000.99'
-          type: string
-      type: object
-    openapi_PayoutCreateResponse_sender_individual:
-      properties:
-        dob:
-          description: Date of birth formatted as yyyy-mm-dd
-          example: 1970-01-01
-          format: yyyy-mm-dd
-          type: string
-        identity_document:
-          $ref: '#/components/schemas/openapi_PayoutCreateResponse_sender_individual_identity_document'
-      type: object
-    openapi.PaymentAccountGetOrCreateRequest:
-      properties:
-        bank_account:
-          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_bank_account'
-        country:
-          description: '<span style="color:#e95f6a;">required</span>
-
-
-            The ISO 3166 alpha-2 country code in which the payment account is registered.'
-          example: KE
-          format: iso3166 alpha-2
-          type: string
-          x-order: '2'
-        holder:
-          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_holder'
-        mobile_money:
-          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateRequest_mobile_money'
-        type:
-          description: '<span style="color:#e95f6a;">required</span>
-
-
-            Either `MOBILE_MONEY` or `BANK_ACCOUNT`'
-          enum:
-          - MOBILE_MONEY
-          - BANK_ACCOUNT
-          type: string
-          x-order: '1'
-      type: object
-    _payouts__id__get_200_response:
+    _payouts_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollection'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/openapi.PayoutGetResponse'
+            type: array
+          meta:
+            $ref: '#/components/schemas/openapi.PayoutListResponseMeta'
+        type: object
+    _payouts_post_202_response:
       allOf:
       - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
       - properties:
           data:
-            $ref: '#/components/schemas/openapi.PayoutGetResponse'
+            $ref: '#/components/schemas/openapi.PayoutCreateResponse'
         type: object
-    openapi_PayoutListResponseMeta_paging:
+    openapi.ResponseBodySuccessNoMeta:
       properties:
-        cursors:
-          $ref: '#/components/schemas/openapi_PayoutListResponseMeta_paging_cursors'
-        next:
-          example: https://rest.sandbox.rafiki-api.com/v1/payouts?paging_after=dHJ4LTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw%3D%3D&paging_limit=10
-          type: string
-      type: object
-    openapi.ResponseBodyNotFound:
-      properties:
-        code:
-          description: '`NOT_FOUND`'
-          example: NOT_FOUND
-          type: string
-        message:
-          description: E.g. "The resource you are looking for cannot be found."
-          example: The resource you are looking for cannot be found.
-          type: string
-      type: object
-    openapi_PayoutCreateResponse_state:
-      properties:
-        code:
-          description: The state code signifies the overall status of a payout. For detailed information about the meaning of each state, please consult the lifecycle section above.
-          enum:
-          - PENDING
-          - REVERSED
-          - SENT
-          - CANCELLED
-          - FAILED
-          example: PENDING
-          type: string
-        context:
-          description: Together with the "code" property, the "context" property offers additional context and information, whenever possible, about the specific state. For instance, if a payout fails, there are numerous reasons why this might occur. The "context" property will provide more detailed information in such cases.
-          type: string
+        data: {}
       type: object
     openapi.PayoutCreateRequest:
       properties:
@@ -847,6 +624,229 @@ components:
           example: wlt-xxx
           type: string
       type: object
+    openapi_PayoutCreateRequest_sender_address:
+      properties:
+        city:
+          description: <span style="color:#e95f6a;">required if address is provided</span>
+          example: Roma
+          type: string
+        country:
+          description: '<span style="color:#e95f6a;">required if address is provided</span>
+
+
+            The ISO 3166 alpha-2 country code associated with the address.'
+          example: IT
+          type: string
+        line_1:
+          description: <span style="color:#e95f6a;">required if address is provided</span>
+          example: Piazza del Colosseo
+          type: string
+        line_2:
+          example: '1'
+          type: string
+        line_3:
+          example: ''
+          type: string
+          x-omitempty: true
+        postal_code:
+          description: '<span style="color:#e95f6a;">required if address is provided</span>
+
+
+            ⚠️ We enforce postal code validation for these following country codes : GB, US, PT, IE, MT, NG, NL, SK'
+          example: 00184
+          type: string
+      type: object
+    openapi_ResponseBodyValidationFailed_errors:
+      properties:
+        fields:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
+          type: object
+      type: object
+    openapi_PayoutListResponseMeta_paging_cursors:
+      properties:
+        after:
+          example: dHJ4LTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw==
+          type: string
+      type: object
+    openapi_PayoutCreateRequest_sender_individual:
+      properties:
+        dob:
+          description: Date of birth formatted as yyyy-mm-dd
+          example: 1970-01-01
+          format: yyyy-mm-dd
+          type: string
+        identity_document:
+          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender_individual_identity_document'
+      type: object
+    openapi.ResponseBodyWalletInsufficientBalance:
+      properties:
+        code:
+          description: '`WALLET_INSUFFICIENT_BALANCE`'
+          example: WALLET_INSUFFICIENT_BALANCE
+          type: string
+        message:
+          description: E.g. "Wallet '{wlt-xxx}' doesn't have enough balance"
+          example: wallet '{wlt-xxx}' doesn't have enough balance
+          type: string
+      type: object
+    openapi_PayoutCreateRequest_sender:
+      description: An optional property for incorporating sender details. Please refer to the "💡 **Compliance requirements**" documentation above.
+      properties:
+        address:
+          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender_address'
+        individual:
+          $ref: '#/components/schemas/openapi_PayoutCreateRequest_sender_individual'
+        name:
+          description: '<span style="color:#e95f6a;">required if sender is provided</span>
+
+
+            The individual full name or registered business legal name'
+          example: Mario Rossi
+          type: string
+        type:
+          description: '<span style="color:#e95f6a;">required if sender is provided</span>
+
+
+            Either `INDIVIDUAL` or `BUSINESS`'
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+          type: string
+      type: object
+    openapi_PayoutCreateRequest_sender_individual_identity_document:
+      properties:
+        country:
+          description: '<span style="color:#e95f6a;">required if identity_document is provided</span>
+
+
+            The ISO 3166 alpha-2 country code indicating the issuing country of the document.'
+          example: IT
+          format: ISO 3166 alpha-2
+          type: string
+        expires_on:
+          description: '<span style="color:#e95f6a;">required if identity_document is provided</span>
+
+
+            Date formatted as yyyy-mm-dd'
+          example: 2030-01-01
+          format: yyyy-mm-dd
+          type: string
+        issued_on:
+          description: Date formatted as yyyy-mm-dd
+          example: 2020-01-01
+          format: yyyy-mm-dd
+          type: string
+        number:
+          description: <span style="color:#e95f6a;">required if identity_document is provided</span>
+          example: YA0000000
+          type: string
+        type:
+          description: '<span style="color:#e95f6a;">required if identity_document is provided</span>
+
+
+            One of `PASSPORT`, `DRIVING_LICENCE`, `NATIONAL_ID_CARD`, `RESIDENCE_PERMIT`'
+          enum:
+          - PASSPORT
+          - DRIVING_LICENCE
+          - NATIONAL_ID_CARD
+          - RESIDENCE_PERMIT
+          type: string
+      type: object
+    openapi_PaymentAccountGetOrCreateRequest_holder:
+      description: '<span style="color:#e95f6a;">required</span>
+
+
+        The individual (or business) in whose name the bank account is registered'
+      properties:
+        name:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            Either the INDIVIDUAL full name or the BUSINESS registered legal name'
+          format: ^(?:[\p{L}'\-]+\s*)+$
+          type: string
+        type:
+          description: '<span style="color:#e95f6a;">required</span>
+
+
+            The holder legal entity type, whether an INDIVIDUAL person or a BUSINESS'
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+          type: string
+      type: object
+      x-order: '3'
+    openapi_PayoutCreateResponse_sender_individual_identity_document:
+      properties:
+        country:
+          description: The ISO 3166 alpha-2 country code indicating the issuing country of the document.
+          example: IT
+          format: ISO 3166 alpha-2
+          type: string
+        expires_on:
+          description: Date formatted as yyyy-mm-dd
+          example: 2030-01-01
+          format: yyyy-mm-dd
+          type: string
+        issued_on:
+          description: Date formatted as yyyy-mm-dd
+          example: 2020-01-01
+          format: yyyy-mm-dd
+          type: string
+        number:
+          example: YA0000000
+          type: string
+        type:
+          enum:
+          - PASSPORT
+          - DRIVING_LICENCE
+          - NATIONAL_ID_CARD
+          - RESIDENCE_PERMIT
+          type: string
+      type: object
+    openapi_PayoutCreateResponse_sender_address:
+      properties:
+        city:
+          example: Roma
+          type: string
+        country:
+          description: The ISO 3166 alpha-2 country code associated with the address.
+          example: IT
+          format: ISO 3166 alpha-2
+          type: string
+        line_1:
+          example: Piazza del Colosseo
+          type: string
+        line_2:
+          example: '1'
+          type: string
+        line_3:
+          example: ''
+          type: string
+          x-omitempty: true
+        postal_code:
+          example: 00184
+          type: string
+      type: object
+    openapi_PayoutListResponseMeta_paging:
+      properties:
+        cursors:
+          $ref: '#/components/schemas/openapi_PayoutListResponseMeta_paging_cursors'
+        next:
+          example: https://rest.sandbox.rafiki-api.com/v1/payouts?paging_after=dHJ4LTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw%3D%3D&paging_limit=10
+          type: string
+      type: object
+    _payouts__id__get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.PayoutGetResponse'
+        type: object
   securitySchemes:
     Bearer:
       in: header

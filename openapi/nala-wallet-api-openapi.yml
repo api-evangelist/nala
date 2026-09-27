@@ -36,6 +36,12 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    openapi.ResponseBodySuccessCollectionNoMeta:
+      properties:
+        data:
+          items: {}
+          type: array
+      type: object
     _wallets_get_200_response_allOf_data_inner:
       properties:
         available:
@@ -66,12 +72,6 @@ components:
           description: E.g. "An internal error has occurred."
           example: An internal error has occurred.
           type: string
-      type: object
-    openapi.ResponseBodySuccessCollectionNoMeta:
-      properties:
-        data:
-          items: {}
-          type: array
       type: object
     _wallets_get_200_response:
       allOf:

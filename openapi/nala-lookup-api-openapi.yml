@@ -118,6 +118,27 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    openapi.ResponseBodySuccessNoMeta:
+      properties:
+        data: {}
+      type: object
+    _lookups__accountNumber__get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.LookupGetResponse'
+        type: object
+    openapi_ResponseBodyValidationFailed_errors:
+      properties:
+        fields:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
+          type: object
+      type: object
     openapi.ResponseBodyValidationFailed:
       properties:
         code:
@@ -131,51 +152,6 @@ components:
           example: Validation failed.
           type: string
       type: object
-    openapi.ResponseBodyInternalServerError:
-      properties:
-        code:
-          description: '`INTERNAL_SERVER_ERROR`'
-          example: INTERNAL_SERVER_ERROR
-          type: string
-        message:
-          description: E.g. "An internal error has occurred."
-          example: An internal error has occurred.
-          type: string
-      type: object
-    _lookups__accountNumber__get_200_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
-      - properties:
-          data:
-            $ref: '#/components/schemas/openapi.LookupGetResponse'
-        type: object
-    openapi.ResponseBodySuccessNoMeta:
-      properties:
-        data: {}
-      type: object
-    openapi.LookupGetResponse:
-      properties:
-        holder:
-          $ref: '#/components/schemas/openapi_LookupGetResponse_holder'
-      type: object
-    openapi_ResponseBodyValidationFailed_errors:
-      properties:
-        fields:
-          additionalProperties:
-            items:
-              type: string
-            type: array
-          description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
-          type: object
-      type: object
-    openapi_LookupGetResponse_holder:
-      properties:
-        name:
-          description: The payment account owner's registered full name at the banking entity
-          example: Mario Rossi
-          type: string
-      type: object
-      x-order: '1'
     openapi.ResponseBodyLookupAccountNotFound:
       properties:
         code:
@@ -187,6 +163,30 @@ components:
           example: the provided account identifier {'xxxxxxxxx'} couldn't be looked up
           type: string
       type: object
+    openapi.ResponseBodyInternalServerError:
+      properties:
+        code:
+          description: '`INTERNAL_SERVER_ERROR`'
+          example: INTERNAL_SERVER_ERROR
+          type: string
+        message:
+          description: E.g. "An internal error has occurred."
+          example: An internal error has occurred.
+          type: string
+      type: object
+    openapi.LookupGetResponse:
+      properties:
+        holder:
+          $ref: '#/components/schemas/openapi_LookupGetResponse_holder'
+      type: object
+    openapi_LookupGetResponse_holder:
+      properties:
+        name:
+          description: The payment account owner's registered full name at the banking entity
+          example: Mario Rossi
+          type: string
+      type: object
+      x-order: '1'
   securitySchemes:
     Bearer:
       in: header
