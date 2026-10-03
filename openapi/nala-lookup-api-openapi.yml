@@ -118,27 +118,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    openapi.ResponseBodySuccessNoMeta:
-      properties:
-        data: {}
-      type: object
-    _lookups__accountNumber__get_200_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
-      - properties:
-          data:
-            $ref: '#/components/schemas/openapi.LookupGetResponse'
-        type: object
-    openapi_ResponseBodyValidationFailed_errors:
-      properties:
-        fields:
-          additionalProperties:
-            items:
-              type: string
-            type: array
-          description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
-          type: object
-      type: object
     openapi.ResponseBodyValidationFailed:
       properties:
         code:
@@ -152,16 +131,24 @@ components:
           example: Validation failed.
           type: string
       type: object
-    openapi.ResponseBodyLookupAccountNotFound:
+    openapi_ResponseBodyValidationFailed_errors:
       properties:
-        code:
-          description: '`LOOKUP_ACCOUNT_NOT_FOUND`'
-          example: LOOKUP_ACCOUNT_NOT_FOUND
-          type: string
-        message:
-          description: E.g. "Invalid bank account number, or, syntactically valid, but not registered with any banking entity"
-          example: the provided account identifier {'xxxxxxxxx'} couldn't be looked up
-          type: string
+        fields:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
+          type: object
+      type: object
+    openapi.ResponseBodySuccessNoMeta:
+      properties:
+        data: {}
+      type: object
+    openapi.LookupGetResponse:
+      properties:
+        holder:
+          $ref: '#/components/schemas/openapi_LookupGetResponse_holder'
       type: object
     openapi.ResponseBodyInternalServerError:
       properties:
@@ -174,11 +161,24 @@ components:
           example: An internal error has occurred.
           type: string
       type: object
-    openapi.LookupGetResponse:
+    openapi.ResponseBodyLookupAccountNotFound:
       properties:
-        holder:
-          $ref: '#/components/schemas/openapi_LookupGetResponse_holder'
+        code:
+          description: '`LOOKUP_ACCOUNT_NOT_FOUND`'
+          example: LOOKUP_ACCOUNT_NOT_FOUND
+          type: string
+        message:
+          description: E.g. "Invalid bank account number, or, syntactically valid, but not registered with any banking entity"
+          example: the provided account identifier {'xxxxxxxxx'} couldn't be looked up
+          type: string
       type: object
+    _lookups__accountNumber__get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.LookupGetResponse'
+        type: object
     openapi_LookupGetResponse_holder:
       properties:
         name:
