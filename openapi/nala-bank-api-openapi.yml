@@ -42,26 +42,6 @@ components:
           items: {}
           type: array
       type: object
-    openapi.ResponseBodyInternalServerError:
-      properties:
-        code:
-          description: '`INTERNAL_SERVER_ERROR`'
-          example: INTERNAL_SERVER_ERROR
-          type: string
-        message:
-          description: E.g. "An internal error has occurred."
-          example: An internal error has occurred.
-          type: string
-      type: object
-    _banks_get_200_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollectionNoMeta'
-      - properties:
-          data:
-            items:
-              $ref: '#/components/schemas/_banks_get_200_response_allOf_data_inner'
-            type: array
-        type: object
     _banks_get_200_response_allOf_data_inner:
       properties:
         country:
@@ -74,6 +54,26 @@ components:
           type: string
         name:
           example: TIB Corporate Bank Limited
+          type: string
+      type: object
+    _banks_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollectionNoMeta'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/_banks_get_200_response_allOf_data_inner'
+            type: array
+        type: object
+    openapi.ResponseBodyInternalServerError:
+      properties:
+        code:
+          description: '`INTERNAL_SERVER_ERROR`'
+          example: INTERNAL_SERVER_ERROR
+          type: string
+        message:
+          description: E.g. "An internal error has occurred."
+          example: An internal error has occurred.
           type: string
       type: object
   securitySchemes:

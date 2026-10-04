@@ -118,19 +118,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    openapi.ResponseBodyValidationFailed:
-      properties:
-        code:
-          description: '`VALIDATION_FAILED`'
-          example: VALIDATION_FAILED
-          type: string
-        errors:
-          $ref: '#/components/schemas/openapi_ResponseBodyValidationFailed_errors'
-        message:
-          description: E.g. "Validation failed."
-          example: Validation failed.
-          type: string
-      type: object
     openapi_ResponseBodyValidationFailed_errors:
       properties:
         fields:
@@ -141,6 +128,13 @@ components:
           description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
           type: object
       type: object
+    _lookups__accountNumber__get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.LookupGetResponse'
+        type: object
     openapi.ResponseBodySuccessNoMeta:
       properties:
         data: {}
@@ -161,6 +155,27 @@ components:
           example: An internal error has occurred.
           type: string
       type: object
+    openapi.ResponseBodyValidationFailed:
+      properties:
+        code:
+          description: '`VALIDATION_FAILED`'
+          example: VALIDATION_FAILED
+          type: string
+        errors:
+          $ref: '#/components/schemas/openapi_ResponseBodyValidationFailed_errors'
+        message:
+          description: E.g. "Validation failed."
+          example: Validation failed.
+          type: string
+      type: object
+    openapi_LookupGetResponse_holder:
+      properties:
+        name:
+          description: The payment account owner's registered full name at the banking entity
+          example: Mario Rossi
+          type: string
+      type: object
+      x-order: '1'
     openapi.ResponseBodyLookupAccountNotFound:
       properties:
         code:
@@ -172,21 +187,6 @@ components:
           example: the provided account identifier {'xxxxxxxxx'} couldn't be looked up
           type: string
       type: object
-    _lookups__accountNumber__get_200_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
-      - properties:
-          data:
-            $ref: '#/components/schemas/openapi.LookupGetResponse'
-        type: object
-    openapi_LookupGetResponse_holder:
-      properties:
-        name:
-          description: The payment account owner's registered full name at the banking entity
-          example: Mario Rossi
-          type: string
-      type: object
-      x-order: '1'
   securitySchemes:
     Bearer:
       in: header

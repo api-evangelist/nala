@@ -146,47 +146,11 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    openapi_PaymentAccountListResponseMeta_paging:
+    openapi.PaymentAccountListResponseMeta:
       properties:
-        cursors:
-          $ref: '#/components/schemas/openapi_PaymentAccountListResponseMeta_paging_cursors'
-        next:
-          example: https://rest.sandbox.rafiki-api.com/v1/payment-accounts?paging_after=cGFjLTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw%3D%3D&paging_limit=15
-          type: string
+        paging:
+          $ref: '#/components/schemas/openapi_PaymentAccountListResponseMeta_paging'
       type: object
-    openapi.ResponseBodyValidationFailed:
-      properties:
-        code:
-          description: '`VALIDATION_FAILED`'
-          example: VALIDATION_FAILED
-          type: string
-        errors:
-          $ref: '#/components/schemas/openapi_ResponseBodyValidationFailed_errors'
-        message:
-          description: E.g. "Validation failed."
-          example: Validation failed.
-          type: string
-      type: object
-    openapi_PaymentAccountGetOrCreateRequest_bank_account:
-      properties:
-        bank_id:
-          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
-
-
-            The bank identifier representing the bank associated with the payment account'
-          example: bnk-xxx
-          format: ksuid
-          type: string
-        number:
-          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
-
-
-            The actual bank account number (alphanum).'
-          example: '12345678'
-          format: alphanum
-          type: string
-      type: object
-      x-order: '4'
     openapi_ResponseBodyValidationFailed_errors:
       properties:
         fields:
@@ -197,11 +161,57 @@ components:
           description: Every key corresponds to the name of a property that has not passed validation. The value associated with each key is an array of strings that serves to provide a descriptive explanation of the requirements for that particular property and the reasons for its failure.
           type: object
       type: object
-    openapi_PaymentAccountListResponseMeta_paging_cursors:
+    openapi_PaymentAccountGetOrCreateResponse_mobile_money:
       properties:
-        after:
-          example: cGFjLTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw==
+        number:
+          example: 254000000000
+          format: e164
           type: string
+        operator:
+          enum:
+          - SAFARICOM
+          - AIRTEL
+          - VODACOM
+          - TIGO
+          - HALOTEL
+          - TTCL
+          - MTN
+          - VODAFONE
+          - MOOV
+          - ORANGE
+          - FREE
+          - EXPRESSO
+          example: SAFARICOM
+          type: string
+      type: object
+    _payment_accounts_post_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
+      - properties:
+          data:
+            $ref: '#/components/schemas/openapi.PaymentAccountGetOrCreateResponse'
+        type: object
+    openapi.ResponseBodySuccessNoMeta:
+      properties:
+        data: {}
+      type: object
+    openapi_PaymentAccountGetOrCreateResponse_holder:
+      properties:
+        name:
+          type: string
+        type:
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+          type: string
+      type: object
+      x-order: '3'
+    openapi.ResponseBodySuccessCollection:
+      properties:
+        data:
+          items: {}
+          type: array
+        meta: {}
       type: object
     openapi_PaymentAccountGetOrCreateRequest_mobile_money:
       properties:
@@ -234,52 +244,26 @@ components:
           type: string
       type: object
       x-order: '4'
-    openapi_PaymentAccountGetOrCreateResponse_holder:
+    openapi_PaymentAccountGetOrCreateRequest_bank_account:
       properties:
-        name:
+        bank_id:
+          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
+
+
+            The bank identifier representing the bank associated with the payment account'
+          example: bnk-xxx
+          format: ksuid
           type: string
-        type:
-          enum:
-          - INDIVIDUAL
-          - BUSINESS
+        number:
+          description: '<span style="color:#e95f6a;">required with type BANK_ACCOUNT</span>
+
+
+            The actual bank account number (alphanum).'
+          example: '12345678'
+          format: alphanum
           type: string
       type: object
-      x-order: '3'
-    openapi.PaymentAccountGetOrCreateResponse:
-      properties:
-        bank_account:
-          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateResponse_bank_account'
-        country:
-          example: KE
-          format: iso3166 alpha-2
-          type: string
-          x-order: '2'
-        created_at:
-          example: 2006-01-02T15:04:05Z07:00
-          format: RFC 3339
-          type: string
-        holder:
-          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateResponse_holder'
-        id:
-          description: The newly created payment account unique identifier
-          example: pac-xxx
-          format: iso3166 alpha-2
-          type: string
-          x-order: '0'
-        mobile_money:
-          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateResponse_mobile_money'
-        type:
-          default: MOBILE_MONEY
-          type: string
-          x-order: '1'
-      type: object
-    _payment_accounts_post_200_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessNoMeta'
-      - properties:
-          data:
-            $ref: '#/components/schemas/openapi.PaymentAccountGetOrCreateResponse'
-        type: object
+      x-order: '4'
     openapi_PaymentAccountGetOrCreateResponse_bank_account:
       properties:
         bank_id:
@@ -291,17 +275,6 @@ components:
           type: string
       type: object
       x-order: '4'
-    _payment_accounts_get_200_response:
-      allOf:
-      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollection'
-      - properties:
-          data:
-            items:
-              $ref: '#/components/schemas/openapi.PaymentAccountGetOrCreateResponse'
-            type: array
-          meta:
-            $ref: '#/components/schemas/openapi.PaymentAccountListResponseMeta'
-        type: object
     openapi.PaymentAccountGetOrCreateRequest:
       properties:
         bank_account:
@@ -330,17 +303,47 @@ components:
           type: string
           x-order: '1'
       type: object
-    openapi.PaymentAccountListResponseMeta:
+    openapi.PaymentAccountGetOrCreateResponse:
       properties:
-        paging:
-          $ref: '#/components/schemas/openapi_PaymentAccountListResponseMeta_paging'
+        bank_account:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateResponse_bank_account'
+        country:
+          example: KE
+          format: iso3166 alpha-2
+          type: string
+          x-order: '2'
+        created_at:
+          example: 2006-01-02T15:04:05Z07:00
+          format: RFC 3339
+          type: string
+        holder:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateResponse_holder'
+        id:
+          description: The newly created payment account unique identifier
+          example: pac-xxx
+          format: iso3166 alpha-2
+          type: string
+          x-order: '0'
+        mobile_money:
+          $ref: '#/components/schemas/openapi_PaymentAccountGetOrCreateResponse_mobile_money'
+        type:
+          default: MOBILE_MONEY
+          type: string
+          x-order: '1'
       type: object
-    openapi.ResponseBodySuccessCollection:
+    openapi_PaymentAccountListResponseMeta_paging_cursors:
       properties:
-        data:
-          items: {}
-          type: array
-        meta: {}
+        after:
+          example: cGFjLTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw==
+          type: string
+      type: object
+    openapi_PaymentAccountListResponseMeta_paging:
+      properties:
+        cursors:
+          $ref: '#/components/schemas/openapi_PaymentAccountListResponseMeta_paging_cursors'
+        next:
+          example: https://rest.sandbox.rafiki-api.com/v1/payment-accounts?paging_after=cGFjLTJXTFhiOGJQNnNTN1FSdkE2QUZHcDdOaEdzNw%3D%3D&paging_limit=15
+          type: string
       type: object
     openapi.ResponseBodyInternalServerError:
       properties:
@@ -377,31 +380,28 @@ components:
           type: string
       type: object
       x-order: '3'
-    openapi.ResponseBodySuccessNoMeta:
+    _payment_accounts_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/openapi.ResponseBodySuccessCollection'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/openapi.PaymentAccountGetOrCreateResponse'
+            type: array
+          meta:
+            $ref: '#/components/schemas/openapi.PaymentAccountListResponseMeta'
+        type: object
+    openapi.ResponseBodyValidationFailed:
       properties:
-        data: {}
-      type: object
-    openapi_PaymentAccountGetOrCreateResponse_mobile_money:
-      properties:
-        number:
-          example: 254000000000
-          format: e164
+        code:
+          description: '`VALIDATION_FAILED`'
+          example: VALIDATION_FAILED
           type: string
-        operator:
-          enum:
-          - SAFARICOM
-          - AIRTEL
-          - VODACOM
-          - TIGO
-          - HALOTEL
-          - TTCL
-          - MTN
-          - VODAFONE
-          - MOOV
-          - ORANGE
-          - FREE
-          - EXPRESSO
-          example: SAFARICOM
+        errors:
+          $ref: '#/components/schemas/openapi_ResponseBodyValidationFailed_errors'
+        message:
+          description: E.g. "Validation failed."
+          example: Validation failed.
           type: string
       type: object
   securitySchemes:
